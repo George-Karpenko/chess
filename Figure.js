@@ -10,9 +10,7 @@ export default class Figure {
     this.#figureContainer = figureContainer;
     this.#figureElement = document.createElement("img");
     this.#figureElement.classList.add("figure");
-    this.#figureElement.src = `imgs/chess-figures/adventurer/${
-      color + value
-    }.png`;
+    this.#figureElement.src = `imgs/chess-figures/merida/${color + value}.png`;
     figureContainer.append(this.#figureElement);
     this.#value = value;
     this.#color = color;
