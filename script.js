@@ -11,6 +11,8 @@ const CLASSES = {
   Q: Queen,
 };
 
+// TODO пат и 50 ходов без продвижения пешек
+
 const gameBoard = document.getElementById("game-board");
 const modal = document.getElementById("modal");
 
