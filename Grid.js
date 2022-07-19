@@ -125,7 +125,7 @@ function createCellElements(gridElement) {
     if (i % GRID_SIZE === GRID_SIZE - 1) {
       const digit = document.createElement("p");
       digit.classList.add("digit");
-      digit.innerText = Math.ceil(i / GRID_SIZE);
+      digit.innerText = Math.ceil(GRID_SIZE - (i / GRID_SIZE));
       cell.append(digit);
     }
     if (i >= GRID_SIZE_SQUARED - GRID_SIZE) {
