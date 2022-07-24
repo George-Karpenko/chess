@@ -4,6 +4,8 @@ import Rook from "./Figures/Rook.js";
 import Bishop from "./Figures/Bishop.js";
 import Knight from "./Figures/Knight.js";
 import Queen from "./Figures/Queen.js";
+
+import localeRU from "./locale/ru.js";
 const CLASSES = {
   R: Rook,
   N: Knight,
@@ -11,7 +13,7 @@ const CLASSES = {
   Q: Queen,
 };
 
-// TODO повторение позиции 3 раза и 50 ходов без продвижения пешек
+// TODO повторение позиции 3 раза
 
 const gameBoard = document.getElementById("game-board");
 const modal = document.getElementById("modal");
@@ -19,6 +21,7 @@ const modal = document.getElementById("modal");
 const grid = new Grid(gameBoard);
 
 let moves = [];
+let numberOfMovesWithoutPawnPromotion = 0;
 let activeFigure;
 let eatenOnAisle;
 
@@ -111,6 +114,14 @@ grid.arrayCells.forEach((cells) => {
         if (replaceFigure) {
           grid.figuresPush(await choosingFigure(activeFigure));
         }
+        numberOfMovesWithoutPawnPromotion++;
+        if (activeFigure.value === "P") {
+          numberOfMovesWithoutPawnPromotion = 0;
+        }
+        if (numberOfMovesWithoutPawnPromotion === 100) {
+          gameResult(localeRU.draw + "<br>" +  localeRU.withoutAdvancingPawns50Moves);
+          return;
+        }
         moveTransition();
         gameResult(gameEndCheck());
       };
@@ -144,7 +155,9 @@ function gameEndCheck() {
   };
   const myFigures = grid.figuresByColor(grid.colorWhoseMove, grid.figures);
   if (checkOnCheck(grid.colorWhoseMove, grid.figures)) {
-    const text = `Победа ${grid.colorWhoseMove !== "w" ? "белых" : "чёрных"}`;
+    const text = localeRU.victoryColor(
+      grid.colorWhoseMove !== "w" ? "белых" : "чёрных"
+    );
     if (
       !~myFigures.findIndex((myFigure) => {
         const moves = getMoves(myFigure);
@@ -175,7 +188,7 @@ function gameEndCheck() {
       if (getMoves(myFigure).length) return true;
     })
   )
-    return "Ничья";
+    return localeRU.draw;
 }
 
 function gameResult(text) {
@@ -185,11 +198,11 @@ function gameResult(text) {
   modal.classList.add("flex");
   modal.append(victory);
   const h1 = document.createElement("h1");
-  h1.innerText = text;
+  h1.innerHTML = text;
   victory.append(h1);
   const button = document.createElement("button");
   victory.append(button);
-  button.innerText = "Начать сначала";
+  button.innerText = localeRU.startOver;
   button.addEventListener("click", function () {
     grid.gameEnd();
     grid.gameStart();
@@ -207,7 +220,7 @@ async function choosingFigure(figure) {
   modal.classList.add("flex");
   modal.append(choosingFigure);
   const h1 = document.createElement("h1");
-  h1.innerText = "Выбери фигуру:";
+  h1.innerText = localeRU.chooseAShape + ":";
   choosingFigure.append(h1);
   for (const key in CLASSES) {
     if (Object.hasOwnProperty.call(CLASSES, key)) {
