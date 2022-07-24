@@ -11,7 +11,7 @@ const CLASSES = {
   Q: Queen,
 };
 
-// TODO пат и 50 ходов без продвижения пешек
+// TODO повторение позиции 3 раза и 50 ходов без продвижения пешек
 
 const gameBoard = document.getElementById("game-board");
 const modal = document.getElementById("modal");
@@ -112,7 +112,7 @@ grid.arrayCells.forEach((cells) => {
           grid.figuresPush(await choosingFigure(activeFigure));
         }
         moveTransition();
-        if (checkmateCheck()) checkmate();
+        gameResult(gameEndCheck());
       };
 
       choosingAFigure();
@@ -135,42 +135,57 @@ function checkOnCheck(color, figures) {
     return true;
   }
 }
-function checkmateCheck() {
+function gameEndCheck() {
+  const getMoves = (myFigure) => {
+    const figures = grid.figures.filter(
+      (figure) => !(figure.x === myFigure.x && figure.y === myFigure.y)
+    );
+    return myFigure.acceptableMoves(figures, eatenOnAisle);
+  };
+  const myFigures = grid.figuresByColor(grid.colorWhoseMove, grid.figures);
   if (checkOnCheck(grid.colorWhoseMove, grid.figures)) {
-    const myFigures = grid.figuresByColor(grid.colorWhoseMove, grid.figures);
-    return !~myFigures.findIndex((myFigure) => {
-      const figures = grid.figures.filter(
-        (figure) => !(figure.x === myFigure.x && figure.y === myFigure.y)
-      );
-      const moves = myFigure.acceptableMoves(figures, eatenOnAisle);
-      const { x, y } = myFigure;
-      const moveFindIndex = moves.findIndex((move) => {
-        myFigure.x = move.x;
-        myFigure.y = move.y;
-        const figures = grid.figures.filter(
-          (figure) =>
-            !(
-              figure.x === myFigure.x &&
-              figure.y === myFigure.y &&
-              figure.color !== myFigure.color
-            )
-        );
-        if (!checkOnCheck(grid.colorWhoseMove, figures)) return true;
-      });
-      myFigure.x = x;
-      myFigure.y = y;
-      if (~moveFindIndex) return true;
-    });
+    const text = `Победа ${grid.colorWhoseMove !== "w" ? "белых" : "чёрных"}`;
+    if (
+      !~myFigures.findIndex((myFigure) => {
+        const moves = getMoves(myFigure);
+        const { x, y } = myFigure;
+        const moveFindIndex = moves.findIndex((move) => {
+          myFigure.x = move.x;
+          myFigure.y = move.y;
+          const figures = grid.figures.filter(
+            (figure) =>
+              !(
+                figure.x === myFigure.x &&
+                figure.y === myFigure.y &&
+                figure.color !== myFigure.color
+              )
+          );
+          if (!checkOnCheck(grid.colorWhoseMove, figures)) return true;
+        });
+        myFigure.x = x;
+        myFigure.y = y;
+        if (~moveFindIndex) return true;
+      })
+    )
+      return text;
   }
+
+  if (
+    !~myFigures.findIndex((myFigure) => {
+      if (getMoves(myFigure).length) return true;
+    })
+  )
+    return "Ничья";
 }
 
-function checkmate() {
+function gameResult(text) {
+  if (!text) return;
   const victory = document.createElement("div");
   victory.id = "victory";
   modal.classList.add("flex");
   modal.append(victory);
   const h1 = document.createElement("h1");
-  h1.innerText = `Победа ${grid.colorWhoseMove !== "w" ? "белых" : "чёрных"}`;
+  h1.innerText = text;
   victory.append(h1);
   const button = document.createElement("button");
   victory.append(button);
