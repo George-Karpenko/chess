@@ -23,6 +23,7 @@ export default class King extends Figure {
         (myFigure) =>
           myFigure.value === "R" &&
           myFigure.color === this.color &&
+          myFigure.y === this.y &&
           !myFigure.isActivated &&
           !~figures.findIndex(
             (figure) =>
