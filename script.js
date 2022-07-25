@@ -13,7 +13,10 @@ const CLASSES = {
   Q: Queen,
 };
 
-// TODO повторение позиции 3 раза
+// TODO 
+// повторение позиции 3 раза
+// магические числа
+// модальные окна. разбить заголовок и выбор фигуры подправить
 
 const gameBoard = document.getElementById("game-board");
 const modal = document.getElementById("modal");
