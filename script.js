@@ -13,17 +13,21 @@ const CLASSES = {
   Q: Queen,
 };
 
-// TODO 
+// TODO
 // повторение позиции 3 раза
 // магические числа
-// модальные окна. разбить заголовок и выбор фигуры подправить
 
 const gameBoard = document.getElementById("game-board");
 const modal = document.getElementById("modal");
+const DRAW_AT = {
+  moves: 100,
+  repeatingAPosition: 3
+}
 
 const grid = new Grid(gameBoard);
 
 let moves = [];
+let positionsOfFigures = [];
 let numberOfMovesWithoutPawnPromotion = 0;
 let activeFigure;
 let eatenOnAisle;
@@ -121,10 +125,22 @@ grid.arrayCells.forEach((cells) => {
         if (activeFigure.value === "P") {
           numberOfMovesWithoutPawnPromotion = 0;
         }
-        if (numberOfMovesWithoutPawnPromotion === 100) {
-          gameResult(localeRU.draw + "<br>" +  localeRU.withoutAdvancingPawns50Moves);
+        if (numberOfMovesWithoutPawnPromotion === DRAW_AT.moves) {
+          gameResult(
+            wrapperInTag(localeRU.draw) +
+              wrapperInTag(localeRU.withoutAdvancingPawns50Moves, "h2")
+          );
           return;
         }
+        // positionsOfFigures.push(JSON.stringify(grid.figures))
+        // console.log(positionsOfFigures)
+        // if (positionsOfFigures.filter(figures => JSON.stringify(grid.figures) === figures).length === 3) {
+        //   gameResult(
+        //     wrapperInTag(localeRU.draw) +
+        //       wrapperInTag(localeRU.chooseAShape, "h2")
+        //   );
+        //   return;
+        // }
         moveTransition();
         gameResult(gameEndCheck());
       };
@@ -158,8 +174,8 @@ function gameEndCheck() {
   };
   const myFigures = grid.figuresByColor(grid.colorWhoseMove, grid.figures);
   if (checkOnCheck(grid.colorWhoseMove, grid.figures)) {
-    const text = localeRU.victoryColor(
-      grid.colorWhoseMove !== "w" ? "белых" : "чёрных"
+    const html = wrapperInTag(
+      localeRU.victoryColor(grid.colorWhoseMove !== "w" ? "белых" : "чёрных")
     );
     if (
       !~myFigures.findIndex((myFigure) => {
@@ -183,7 +199,7 @@ function gameEndCheck() {
         if (~moveFindIndex) return true;
       })
     )
-      return text;
+      return html;
   }
 
   if (
@@ -191,18 +207,16 @@ function gameEndCheck() {
       if (getMoves(myFigure).length) return true;
     })
   )
-    return localeRU.draw;
+    return wrapperInTag(localeRU.draw) + wrapperInTag(localeRU.stalemate, "h2");
 }
 
-function gameResult(text) {
-  if (!text) return;
+function gameResult(html) {
+  if (!html) return;
   const victory = document.createElement("div");
   victory.id = "victory";
   modal.classList.add("flex");
   modal.append(victory);
-  const h1 = document.createElement("h1");
-  h1.innerHTML = text;
-  victory.append(h1);
+  victory.innerHTML = html;
   const button = document.createElement("button");
   victory.append(button);
   button.innerText = localeRU.startOver;
@@ -218,19 +232,21 @@ function gameResult(text) {
 async function choosingFigure(figure) {
   let figures = [];
   let x = 0;
+  let div = document.createElement("div");
   let choosingFigure = document.createElement("div");
   choosingFigure.id = "choosing-figure";
   modal.classList.add("flex");
-  modal.append(choosingFigure);
+  modal.append(div);
   const h1 = document.createElement("h1");
   h1.innerText = localeRU.chooseAShape + ":";
-  choosingFigure.append(h1);
+  div.append(h1);
+  div.append(choosingFigure);
   for (const key in CLASSES) {
     if (Object.hasOwnProperty.call(CLASSES, key)) {
       const classFigure = CLASSES[key];
       figures.push(
         new classFigure({
-          y: 1,
+          y: 0,
           x,
           color: figure.color,
           figureContainer: choosingFigure,
@@ -246,7 +262,7 @@ async function choosingFigure(figure) {
         newFigure.figureElement.addEventListener(
           "click",
           function () {
-            modal.removeChild(choosingFigure);
+            modal.removeChild(div);
             modal.classList.remove("flex");
             figure.remove();
             resolve({
@@ -259,4 +275,8 @@ async function choosingFigure(figure) {
       });
     })
   );
+}
+
+function wrapperInTag(text, tag = "h1") {
+  return `<${tag}>${text}</${tag}>`;
 }

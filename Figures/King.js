@@ -1,4 +1,5 @@
 import Figure from "../Figure.js";
+import GlobalConst from "../GlobalConst.js";
 export default class King extends Figure {
   #isActivated = false;
   #rooks;
@@ -50,7 +51,7 @@ export default class King extends Figure {
       });
     };
     let checkMove = (x, y) => {
-      if (x < 0 || x > 7 || y < 0 || y > 7) return;
+      if (x < 0 || x >= GlobalConst.GRID_SIZE || y < 0 || y >= GlobalConst.GRID_SIZE) return;
       if (
         ~figures.findIndex(
           (figure) =>
@@ -105,7 +106,7 @@ export default class King extends Figure {
         let rook = this.#rooks.find((rook) => rook.x === 0);
         castling = rook.castling();
       } else {
-        let rook = this.#rooks.find((rook) => rook.x === 7);
+        let rook = this.#rooks.find((rook) => rook.x === GlobalConst.GRID_SIZE - 1);
         castling = rook.castling();
       }
     }

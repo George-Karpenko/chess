@@ -39,16 +39,18 @@ body {
   display: flex;
 }
 
-#choosing-figure,
-#victory {
+#modal > div {
   background-color: #fff;
   border-radius: 10px;
-  width: 16em;
+  padding: 0 15px;
 }
 
-#choosing-figure h1,
-#victory h1 {
-  font-size: 2em;
+#modal h1 {
+  font-size: 1.5em;
+  text-align: center;
+}
+#modal h2 {
+  font-size: 1em;
   text-align: center;
 }
 
@@ -77,15 +79,11 @@ body {
 
 #choosing-figure {
   width: calc(var(--size) / 2);
-  height: calc(var(--size) / 4);
+  height: calc(var(--size) / 8);
   grid-template-columns: repeat(4, var(--cell-size));
-  grid-template-rows: repeat(2, var(--cell-size));
-  border: 10px solid #fff;
-  border-top: 0;
-}
-
-#choosing-figure h1 {
-  grid-area: 1 / 1 / 2 / 5;
+  grid-template-rows: var(--cell-size);
+  margin: auto;
+  margin-bottom: 15px;
 }
 
 #choosing-figure .figure:hover {

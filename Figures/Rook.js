@@ -1,4 +1,5 @@
 import Figure from "../Figure.js";
+import GlobalConst from "../GlobalConst.js";
 export default class Rook extends Figure {
   #isActivated = false;
   acceptableMoves(figures) {
@@ -34,8 +35,8 @@ export default class Rook extends Figure {
 
     checkMove(0, "x");
     checkMove(0, "y");
-    checkMove(8, "x");
-    checkMove(8, "y");
+    checkMove(GlobalConst.GRID_SIZE, "x");
+    checkMove(GlobalConst.GRID_SIZE, "y");
     return moves;
   }
   async move({ x, y, figure }) {
@@ -45,10 +46,12 @@ export default class Rook extends Figure {
   async castling() {
     this.#isActivated = true;
     if (this.x === 0) {
-      this.x = 3;
+      const rookPositionDuringCastling = 3
+      this.x = rookPositionDuringCastling;
     }
     if (this.x === 7) {
-      this.x = 5;
+      const rookPositionDuringCastling = 5
+      this.x = rookPositionDuringCastling;
     }
     await this.waitForTransition();
   }

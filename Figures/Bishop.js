@@ -1,4 +1,5 @@
 import Figure from "../Figure.js";
+import GlobalConst from "../GlobalConst.js";
 export default class Bishop extends Figure {
   acceptableMoves(figures) {
     let moves = [];
@@ -29,9 +30,9 @@ export default class Bishop extends Figure {
     };
 
     checkMove(0, 0)
-    checkMove(0, 8)
-    checkMove(8, 0)
-    checkMove(8, 8)
+    checkMove(0, GlobalConst.GRID_SIZE)
+    checkMove(GlobalConst.GRID_SIZE, 0)
+    checkMove(GlobalConst.GRID_SIZE, GlobalConst.GRID_SIZE)
 
     return moves;
   }

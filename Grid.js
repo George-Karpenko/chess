@@ -6,8 +6,9 @@ import Knight from "./Figures/Knight.js";
 import King from "./Figures/King.js";
 import Queen from "./Figures/Queen.js";
 
-const GRID_SIZE = 8;
-const GRID_SIZE_SQUARED = GRID_SIZE ** 2;
+import GlobalConst from "../GlobalConst.js";
+
+const GRID_SIZE_SQUARED = GlobalConst.GRID_SIZE ** 2;
 const CLASSES = {
   P: Pawn,
   R: Rook,
@@ -122,16 +123,16 @@ function createCellElements(gridElement) {
   const cells = [];
   for (let i = 0; i < GRID_SIZE_SQUARED; i++) {
     const cell = document.createElement("div");
-    if (i % GRID_SIZE === GRID_SIZE - 1) {
+    if (i % GlobalConst.GRID_SIZE === GlobalConst.GRID_SIZE - 1) {
       const digit = document.createElement("p");
       digit.classList.add("digit");
-      digit.innerText = Math.ceil(GRID_SIZE - (i / GRID_SIZE));
+      digit.innerText = Math.ceil(GlobalConst.GRID_SIZE - (i / GlobalConst.GRID_SIZE));
       cell.append(digit);
     }
-    if (i >= GRID_SIZE_SQUARED - GRID_SIZE) {
+    if (i >= GRID_SIZE_SQUARED - GlobalConst.GRID_SIZE) {
       const digit = document.createElement("p");
       digit.classList.add("character");
-      digit.innerText = String.fromCharCode(Math.ceil(i % GRID_SIZE) + 97);
+      digit.innerText = String.fromCharCode(Math.ceil(i % GlobalConst.GRID_SIZE) + 97);
       cell.append(digit);
     }
     cell.classList.add("cell");
@@ -142,10 +143,10 @@ function createCellElements(gridElement) {
 }
 
 function calculationX(index) {
-  return index % GRID_SIZE;
+  return index % GlobalConst.GRID_SIZE;
 }
 function calculationY(index) {
-  return Math.floor(index / GRID_SIZE);
+  return Math.floor(index / GlobalConst.GRID_SIZE);
 }
 
 function startingPosition(gridElement) {
@@ -168,7 +169,7 @@ function startingPosition(gridElement) {
       positionOfPieces(
         color,
         index,
-        POSITION_OF_HEAVY_PIECES[index % GRID_SIZE]
+        POSITION_OF_HEAVY_PIECES[index % GlobalConst.GRID_SIZE]
       );
     }
   }
@@ -179,13 +180,13 @@ function startingPosition(gridElement) {
   }
   const POSITION_OF_HEAVY_PIECES = ["R", "N", "B", "Q", "K", "B", "N", "R"];
 
-  positionOfHeavyPieces(0, GRID_SIZE, "b");
-  positionOfPawns(GRID_SIZE, GRID_SIZE * 2, "b");
+  positionOfHeavyPieces(0, GlobalConst.GRID_SIZE, "b");
+  positionOfPawns(GlobalConst.GRID_SIZE, GlobalConst.GRID_SIZE * 2, "b");
 
-  positionOfHeavyPieces(GRID_SIZE_SQUARED - GRID_SIZE, GRID_SIZE_SQUARED);
+  positionOfHeavyPieces(GRID_SIZE_SQUARED - GlobalConst.GRID_SIZE, GRID_SIZE_SQUARED);
   positionOfPawns(
-    GRID_SIZE_SQUARED - GRID_SIZE * 2,
-    GRID_SIZE_SQUARED - GRID_SIZE
+    GRID_SIZE_SQUARED - GlobalConst.GRID_SIZE * 2,
+    GRID_SIZE_SQUARED - GlobalConst.GRID_SIZE
   );
 
   return figures;

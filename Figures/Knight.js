@@ -1,8 +1,9 @@
 import Figure from "../Figure.js";
+import GlobalConst from "../GlobalConst.js";
 export default class Knight extends Figure {
   acceptableMoves(figures) {
     let checkMove = (moves, x, y) => {
-      if (x < 0 || x > 7 || y < 0 || y > 7) return;
+      if (x < 0 || x >= GlobalConst.GRID_SIZE || y < 0 || y >= GlobalConst.GRID_SIZE) return;
       if (
         figures.find(
           (figure) =>

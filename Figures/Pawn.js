@@ -1,4 +1,5 @@
 import Figure from "../Figure.js";
+import GlobalConst from "../GlobalConst.js";
 
 export default class Pawn extends Figure {
   #isActivated = false;
@@ -65,6 +66,6 @@ export default class Pawn extends Figure {
     if (isTakingOnPass) {
       return { eatenOnAisle: this };
     }
-    if (this.y === 0 || this.y === 7) return { replaceFigure: true };
+    if (this.y === 0 || this.y === GlobalConst.GRID_SIZE - 1) return { replaceFigure: true };
   }
 }

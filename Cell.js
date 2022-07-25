@@ -1,4 +1,3 @@
-// import Pawn from "./Pieces/Pawn.js";
 export default class Cell {
   #cellElement;
   #x;
