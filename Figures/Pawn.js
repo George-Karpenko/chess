@@ -10,7 +10,10 @@ export default class Pawn extends Figure {
       const figure = figures.find(
         (figure) => figure.x === this.x && figure.y === this.y + onCells
       );
-      if (!figure) moves.push({ x: this.x, y: this.y + onCells });
+      if (!figure) {
+        moves.push({ x: this.x, y: this.y + onCells });
+        return true;
+      }
     };
 
     if (
@@ -24,8 +27,7 @@ export default class Pawn extends Figure {
       });
     }
 
-    moveForward();
-    if (!this.#isActivated) {
+    if (moveForward() && !this.#isActivated) {
       moveForward(this.#directionMoveY * 2);
     }
 
