@@ -6,7 +6,7 @@ import Knight from "./Figures/Knight.js";
 import King from "./Figures/King.js";
 import Queen from "./Figures/Queen.js";
 
-import GlobalConst from "../GlobalConst.js";
+import GlobalConst from "./GlobalConst.js";
 
 const GRID_SIZE_SQUARED = GlobalConst.GRID_SIZE ** 2;
 const CLASSES = {
