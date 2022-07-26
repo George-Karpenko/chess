@@ -14,15 +14,14 @@ const CLASSES = {
 };
 
 // TODO
-// повторение позиции 3 раза
-// магические числа
+// Проверить название переменных
 
 const gameBoard = document.getElementById("game-board");
 const modal = document.getElementById("modal");
 const DRAW_AT = {
   moves: 100,
-  repeatingAPosition: 3
-}
+  repeatingAPosition: 3,
+};
 
 const grid = new Grid(gameBoard);
 
@@ -33,6 +32,8 @@ let activeFigure;
 let eatenOnAisle;
 
 grid.figuresCursore();
+
+positionsOfFigures.push(grid.positionOfFigures());
 
 grid.arrayCells.forEach((cells) => {
   cells.forEach((cell) => {
@@ -89,13 +90,30 @@ grid.arrayCells.forEach((cells) => {
       };
 
       const choosingAMove = async () => {
-        let moveTransition = () => {
-          grid.figures = grid.figures.filter((figure) => figure.value);
+        const moveTransition = () => {
           activeFigure.figureElement.classList.remove("active");
           activeFigure = null;
           moves = [];
           grid.colorWhoseMove = grid.oppositeСolor(grid.colorWhoseMove);
           grid.figuresCursore();
+        };
+        const numberOfRepetitionsOfPosition = (
+          positionsOfFigures,
+          jsonFigures
+        ) => {
+          let count = 0;
+          positionsOfFigures.forEach((positionOfFigures) => {
+            let trigger = true;
+            for (const key in positionOfFigures) {
+              if (jsonFigures[key] !== positionOfFigures[key]) {
+                trigger = false;
+              }
+            }
+            if (trigger) {
+              count++;
+            }
+          });
+          return count;
         };
 
         if (!moves.find((move) => move.x === cell.x && move.y === cell.y))
@@ -123,6 +141,7 @@ grid.arrayCells.forEach((cells) => {
         }
         numberOfMovesWithoutPawnPromotion++;
         if (activeFigure.value === "P") {
+          positionsOfFigures.length = 0;
           numberOfMovesWithoutPawnPromotion = 0;
         }
         if (numberOfMovesWithoutPawnPromotion === DRAW_AT.moves) {
@@ -132,15 +151,24 @@ grid.arrayCells.forEach((cells) => {
           );
           return;
         }
-        // positionsOfFigures.push(JSON.stringify(grid.figures))
-        // console.log(positionsOfFigures)
-        // if (positionsOfFigures.filter(figures => JSON.stringify(grid.figures) === figures).length === 3) {
-        //   gameResult(
-        //     wrapperInTag(localeRU.draw) +
-        //       wrapperInTag(localeRU.chooseAShape, "h2")
-        //   );
-        //   return;
-        // }
+        const countFiguresOld = grid.figures.length
+        grid.figures = grid.figures.filter((figure) => figure.value);
+        if (countFiguresOld !== grid.figures.length) {
+          positionsOfFigures.length = 0;
+        }
+        positionsOfFigures.push(grid.positionOfFigures());
+        if (
+          numberOfRepetitionsOfPosition(
+            positionsOfFigures,
+            positionsOfFigures.at(-1)
+          ) === 3
+        ) {
+          gameResult(
+            wrapperInTag(localeRU.draw) +
+              wrapperInTag(localeRU.repeatingAPosition, "h2")
+          );
+          return;
+        }
         moveTransition();
         gameResult(gameEndCheck());
       };

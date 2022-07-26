@@ -4,5 +4,6 @@ export default {
   startOver: "Начать сначала",
   chooseAShape: "Выбери фигуру",
   withoutAdvancingPawns50Moves: "50 ходов без продвижения пешек",
-  stalemate : "Пат"
+  stalemate : "Пат",
+  repeatingAPosition : "Позиция повторилась трижды",
 }

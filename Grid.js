@@ -114,6 +114,14 @@ export default class Grid {
     );
   }
 
+  positionOfFigures() {
+    let jsonFigures = {};
+    this.#figures.forEach((figure) => {
+      jsonFigures[`${figure.x}|${figure.y}`] = figure.value;
+    });
+    return jsonFigures;
+  }
+
   oppositeСolor(value) {
     return value === "w" ? "b" : "w";
   }
@@ -126,13 +134,17 @@ function createCellElements(gridElement) {
     if (i % GlobalConst.GRID_SIZE === GlobalConst.GRID_SIZE - 1) {
       const digit = document.createElement("p");
       digit.classList.add("digit");
-      digit.innerText = Math.ceil(GlobalConst.GRID_SIZE - (i / GlobalConst.GRID_SIZE));
+      digit.innerText = Math.ceil(
+        GlobalConst.GRID_SIZE - i / GlobalConst.GRID_SIZE
+      );
       cell.append(digit);
     }
     if (i >= GRID_SIZE_SQUARED - GlobalConst.GRID_SIZE) {
       const digit = document.createElement("p");
       digit.classList.add("character");
-      digit.innerText = String.fromCharCode(Math.ceil(i % GlobalConst.GRID_SIZE) + 97);
+      digit.innerText = String.fromCharCode(
+        Math.ceil(i % GlobalConst.GRID_SIZE) + 97
+      );
       cell.append(digit);
     }
     cell.classList.add("cell");
@@ -183,7 +195,10 @@ function startingPosition(gridElement) {
   positionOfHeavyPieces(0, GlobalConst.GRID_SIZE, "b");
   positionOfPawns(GlobalConst.GRID_SIZE, GlobalConst.GRID_SIZE * 2, "b");
 
-  positionOfHeavyPieces(GRID_SIZE_SQUARED - GlobalConst.GRID_SIZE, GRID_SIZE_SQUARED);
+  positionOfHeavyPieces(
+    GRID_SIZE_SQUARED - GlobalConst.GRID_SIZE,
+    GRID_SIZE_SQUARED
+  );
   positionOfPawns(
     GRID_SIZE_SQUARED - GlobalConst.GRID_SIZE * 2,
     GRID_SIZE_SQUARED - GlobalConst.GRID_SIZE
