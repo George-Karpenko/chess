@@ -10,6 +10,10 @@ import ViewModal from "./View/ViewModal.js";
 import ViewPieces from "./View/ViewPieces.js";
 import ViewPromotionChoice from "./View/ViewPromotionChoice.js";
 
+if (!"pieces" in localStorage) {
+  localStorage.setItem("pieces", "alpha");
+}
+
 const gameBoard = document.getElementById("game");
 const board = document.getElementById("board");
 board.style.setProperty("--count-cell", GRID_SIZE);

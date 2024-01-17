@@ -18,6 +18,7 @@
   flex-direction: column;
   gap: 20px;
   width: max-content;
+  max-width: 100%;
 }
 
 #modal h1 {
@@ -70,4 +71,8 @@ button > span {
 button:hover {
   background-color: rgb(46, 92, 160);
   color: #fff;
+}
+
+button.align--center {
+  align-self: center;
 }

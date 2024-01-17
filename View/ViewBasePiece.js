@@ -10,9 +10,9 @@ export default class ViewBasePiece {
     this.#value = value;
     this.#pieceElement = document.createElement("img");
     this.#pieceElement.classList.add("piece");
-    this.#pieceElement.src = `${baseUrlPieces}${
-      localStorage.getItem("pieces") ?? "alpha"
-    }/${color + designationInRecord[value]}.png`;
+    this.#pieceElement.src = `${baseUrlPieces}${localStorage.getItem(
+      "pieces"
+    )}/${color + designationInRecord[value]}.png`;
     pieceContainer.append(this.#pieceElement);
   }
 
@@ -30,9 +30,9 @@ export default class ViewBasePiece {
 
   set value(value) {
     this.#value = value;
-    this.pieceElement.src = `${baseUrlPieces}${
-      localStorage.getItem("pieces") ?? "alpha"
-    }/${this.color + designationInRecord[value]}.png`;
+    this.pieceElement.src = `${baseUrlPieces}${localStorage.getItem(
+      "pieces"
+    )}/${this.color + designationInRecord[value]}.png`;
   }
 
   remove() {

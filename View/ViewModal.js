@@ -91,11 +91,13 @@ export default class ViewModal {
 
   gameUserVsComputer() {
     this.removeModal();
-    const modalElement = ViewGameSettingUserVsComputer(
-      this.gameMenu.bind(this)
-    );
+    const modalElement = ViewGameSettingUserVsComputer();
 
     const buttonStartGame = viewButton(modalElement, "Начать игру");
+
+    const button = viewButton(modalElement, "назад");
+    addEventClick(button, this.gameMenu.bind(this));
+
     modalElement.append(buttonStartGame);
 
     stopPropagation(modalElement);

@@ -54,11 +54,13 @@ export default class ViewModal {
 }
 
 function gameUser() {
+  localStorage.setItem("whitePlayerIsAManPlayingForBlack", false);
   localStorage.setItem("player1", "User");
   localStorage.setItem("player2", "User");
 }
 
 function gameComputer() {
+  localStorage.setItem("whitePlayerIsAManPlayingForBlack", false);
   localStorage.setItem("player1", "Computer");
   localStorage.setItem("player2", "Computer");
 }

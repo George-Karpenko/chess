@@ -19,20 +19,29 @@ export default (cb) => {
   const modalElement = document.createElement("div");
   viewTitle(modalElement, "Выбор фигур");
   const buttonContainer = document.createElement("div");
+  buttonContainer.classList.add("pieces__settings");
+  let buttonActive;
   choicePieces.forEach((piece) => {
     const imgs = document.createElement("div");
-    viewImg({ element: imgs, text: `../imgs/chess-pieces/${piece}/bK.png` });
-    viewImg({ element: imgs, text: `../imgs/chess-pieces/${piece}/wK.png` });
+    viewImg({ element: imgs, text: `./imgs/chess-pieces/${piece}/bK.png` });
+    viewImg({ element: imgs, text: `./imgs/chess-pieces/${piece}/wK.png` });
     const button = viewButtonWithElement(buttonContainer, imgs);
+    if (localStorage.getItem("pieces") === piece) {
+      button.classList.add("active");
+      buttonActive = button;
+    }
 
     addEventClick(button, () => {
+      buttonActive.classList.remove("active");
+      buttonActive = button;
+      buttonActive.classList.add("active");
       localStorage.setItem("pieces", piece);
     });
   });
-  const button = viewButton(buttonContainer, "назад");
-  addEventClick(button, cb);
-  buttonContainer.classList.add("flex");
   modalElement.append(buttonContainer);
+  const button = viewButton(modalElement, "назад");
+  button.classList.add("align--center");
+  addEventClick(button, cb);
   return modalElement;
 };
 
