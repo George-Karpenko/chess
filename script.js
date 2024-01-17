@@ -19,7 +19,7 @@ const board = document.getElementById("board");
 board.style.setProperty("--count-cell", GRID_SIZE);
 const promotionChoice = document.getElementById("promotion-choice");
 const modal = document.getElementById("modal");
-let viewMoves; // = new ViewMoves(gameBoard);
+let viewMoves;
 const viewPromotionChoice = new ViewPromotionChoice(promotionChoice);
 let whitePlayer, blackPlayer, gridPieces, viewPieces, mapPieces, game;
 
@@ -30,12 +30,6 @@ function createGame() {
   restartGame();
   whitePlayer = localStorage.getItem("whitePlayer");
   blackPlayer = localStorage.getItem("blackPlayer");
-  // if (blackPlayer === "User" && whitePlayer === "Computer") {
-  //   gameBoard.classList.add("rotate");
-  //   console.log(gameBoard.classList);
-  // } else {
-  //   gameBoard.classList.remove("rotate");
-  // }
   viewMoves = new ViewMoves(gameBoard);
   gridPieces = startingPositionOfPieces();
   viewPieces = new ViewPieces(gameBoard, gridPieces);

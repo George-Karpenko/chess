@@ -98,8 +98,6 @@ export default class ViewModal {
     const button = viewButton(modalElement, "назад");
     addEventClick(button, this.gameMenu.bind(this));
 
-    modalElement.append(buttonStartGame);
-
     stopPropagation(modalElement);
 
     addEventClick(buttonStartGame, this.createGame);
