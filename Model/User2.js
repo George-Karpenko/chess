@@ -67,7 +67,7 @@ export default class User {
 
     if (!isActive) {
       piece = this.#pieces.gridPieces[y][x];
-      if (!piece) {
+      if (!piece || piece.color !== this.#color) {
         return this.clickOnCell(eatenOnAisle);
       }
       this.#viewPiece = this.#pieces.mapPieces.get(piece);
