@@ -3,8 +3,8 @@ import AbstractCheck from "./AbstractCheck.js";
 import { triggerColor } from "../functions.js";
 
 export default class Checkmate extends AbstractCheck {
-  handle(date) {
-    const { gridPieces, isAMove, eatenOnAisle } = date;
+  handle(data) {
+    const { gridPieces, isAMove, eatenOnAisle } = data;
     const myPieces = colorPieces(gridPieces, isAMove);
     const enemyPieces = colorPieces(gridPieces, triggerColor(isAMove));
     const king = colorKing(gridPieces, triggerColor(isAMove));
@@ -26,7 +26,7 @@ export default class Checkmate extends AbstractCheck {
         return { title: "Stalemate", text: "Пат" };
       }
     }
-    return super.handle(date);
+    return super.handle(data);
   }
 }
 

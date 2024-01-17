@@ -4,9 +4,9 @@ export default class Rule50Move extends AbstractCheck {
   #countMoves;
   #countPieces;
   #maximumNumberOfMovesForTwoPlayers = 100;
-  handle(date) {
+  handle(data) {
     // TODO piece нужно вычислять (
-    const { gridPieces } = date;
+    const { gridPieces } = data;
     const newCountPieces = countPieces(gridPieces);
 
     if (newCountPieces !== this.#countPieces) {
@@ -24,7 +24,7 @@ export default class Rule50Move extends AbstractCheck {
       return { title: "Draw", text: "50 ходов без продвижения пешек" };
     }
 
-    return super.handle(date);
+    return super.handle(data);
   }
 }
 

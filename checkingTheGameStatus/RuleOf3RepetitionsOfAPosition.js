@@ -4,9 +4,9 @@ export default class RuleOf3RepetitionsOfAPosition extends AbstractCheck {
   #arrayPositions = [];
   #countPieces;
   #maximumNumberOfAPosition = 3;
-  handle(date) {
+  handle(data) {
     // TODO piece нужно вычислять (
-    const { gridPieces, isAMove } = date;
+    const { gridPieces, isAMove } = data;
     const newCountPieces = countPieces(gridPieces);
     const newPosition = pieces(gridPieces).toString();
 
@@ -44,7 +44,7 @@ export default class RuleOf3RepetitionsOfAPosition extends AbstractCheck {
       };
     }
 
-    return super.handle(date);
+    return super.handle(data);
   }
 }
 

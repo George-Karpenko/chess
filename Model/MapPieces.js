@@ -23,14 +23,14 @@ export default class MapPieces extends GridPieces {
   }
 
   async movePiece({ x, y, eatenOnAisle, piece, promotionChoice }) {
-    const viewUpdatePieces = [];
+    const viewUpdataPieces = [];
     const payload =
       (await super.movePiece({ x, y, eatenOnAisle, piece })) || {};
-    viewUpdatePieces.push(piece);
+    viewUpdataPieces.push(piece);
     if (payload.rook) {
-      viewUpdatePieces.push(payload.rook);
+      viewUpdataPieces.push(payload.rook);
     }
-    await this.viewUpPieces(viewUpdatePieces);
+    await this.viewUpPieces(viewUpdataPieces);
     if (piece.constructor.name === "Pawn" && (y === 0 || y === GRID_SIZE - 1)) {
       this.gridPieces[y][x] = await this.promotionChoice(
         promotionChoice,
