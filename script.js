@@ -41,7 +41,7 @@ function createGame() {
   game = new GameController({
     blackPlayer,
     whitePlayer,
-    gridPieces,
+    mapPieces,
   });
   setTimeout(async () => {
     const result = await game.start();
