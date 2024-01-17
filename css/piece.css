@@ -1,0 +1,22 @@
+.piece {
+  position: absolute;
+  width: var(--cell-size);
+  height: var(--cell-size);
+
+  top: calc(var(--y) * var(--cell-size));
+  left: calc(var(--x) * var(--cell-size));
+  transition: top 500ms ease-in-out, left 500ms ease-in-out;
+}
+
+.piece.piece__drag {
+  position: absolute;
+  width: var(--cell-size);
+  height: var(--cell-size);
+
+  top: calc(var(--y) * var(--cell-size));
+  left: calc(var(--x) * var(--cell-size));
+  transition: top 0ms ease-in-out, left 0ms ease-in-out;
+}
+.piece.piece__fast-travel {
+  transition: top 1ms ease-in-out, left 1ms ease-in-out;
+}

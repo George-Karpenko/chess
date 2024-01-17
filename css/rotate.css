@@ -1,0 +1,20 @@
+.rotate,
+.rotate .piece,
+.rotate .digit,
+.rotate .character {
+  rotate: 180deg;
+}
+
+.rotate .cell .character {
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.rotate .cell .digit {
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.rotate.piece.piece__drag {
+  rotate: 180deg;
+}

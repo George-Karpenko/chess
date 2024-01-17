@@ -1,0 +1,34 @@
+
+.icon {
+  background-color: rgb(46, 92, 160);
+  padding: 20px;
+}
+
+.icon::after {
+  content: "";
+  background-color: #fff;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+}
+
+.icon.computer::after {
+  -webkit-mask: url(../imgs/main/desktop-svgrepo-com.svg) no-repeat 50% 50%;
+  mask: url(../imgs/main/desktop-svgrepo-com.svg) no-repeat 50% 50%;
+  -webkit-mask-size: cover;
+  mask-size: cover;
+}
+
+.icon.user::after {
+  -webkit-mask: url(../imgs/main/user-svgrepo-com.svg) no-repeat 50% 50%;
+  mask: url(../imgs/main/user-svgrepo-com.svg) no-repeat 50% 50%;
+  -webkit-mask-size: cover;
+  mask-size: cover;
+}
+
+.icon.appearance::after {
+  -webkit-mask: url(../imgs/main/crown-svgrepo-com.svg) no-repeat 50% 50%;
+  mask: url(../imgs/main/crown-svgrepo-com.svg) no-repeat 50% 50%;
+  -webkit-mask-size: cover;
+  mask-size: cover;
+}

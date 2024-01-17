@@ -1,9 +1,16 @@
-class GlobalConst {
-  #GRID_SIZE = 8
+// class GlobalConst {
+//   #GRID_SIZE = 8
 
-  get GRID_SIZE() {
-    return this.#GRID_SIZE
-  }
-}
+//   get GRID_SIZE() {
+//     return this.#GRID_SIZE
+//   }
+//   get GRID_SIZE_SQUARED() {
+//     return this.#GRID_SIZE ** 2
+//   }
+// }
 
-export default new GlobalConst();
+export const GRID_SIZE = 8;
+
+export const baseUrlPieces = "imgs/chess-pieces/";
+
+// export default new GlobalConst();

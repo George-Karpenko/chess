@@ -1,0 +1,82 @@
+.cell {
+  --background-color-move: hsla(93, 100%, 39%, 0.41);
+  --background-color-cell: hsla(93, 100%, 29%, 0.41);
+  background-color: bisque;
+  color: #333;
+  font-size: 1em;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.cell .digit,
+.cell .character {
+  margin: 0;
+  display: flex;
+  justify-content: flex-end;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  padding: 2px;
+  box-sizing: border-box;
+  font-size: min(1em, 2.5vw);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.cell .character {
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.cell.black {
+  background-color: #333;
+  color: bisque;
+}
+
+.cell::after,
+.cell::before {
+  content: "";
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+}
+.cell::after {
+  z-index: 1;
+}
+
+.cell.active::before {
+  content: "";
+  background: radial-gradient(
+    var(--background-color-cell) 16%,
+    rgba(0, 0, 0, 0) 18%
+  );
+  cursor: pointer;
+}
+
+.cell.active.active__possible_capture::before {
+  background: radial-gradient(
+    transparent 0%,
+    transparent 79%,
+    var(--background-color-cell) 80%
+  );
+}
+.cell.active:hover::before,
+.cell.active.hover::before {
+  background: var(--background-color-cell);
+}
+
+.cell.active.active__possible_capture:hover::before {
+  background: var(--background-color-cell);
+}
+
+.move::before {
+  background: var(--background-color-move);
+}

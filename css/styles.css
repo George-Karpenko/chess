@@ -1,0 +1,28 @@
+@import url(./settings.css);
+@import url(./rotate.css);
+@import url(./piece.css);
+@import url(./promotion-choice.css);
+@import url(./cell.css);
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+#board {
+  --size: clamp(320px, 75vmin, 600px);
+  --cell-size: calc(100% / var(--count-cell));
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+}
+
+#game {
+  display: grid;
+  grid-template-columns: repeat(var(--count-cell), 1fr);
+  grid-template-rows: repeat(var(--count-cell), 1fr);
+  height: 100%;
+}
