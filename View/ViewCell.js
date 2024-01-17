@@ -5,7 +5,6 @@ export default class ViewCell {
   #x;
   #y;
   #isActive;
-  #resolve;
 
   constructor(cellElement, x, y) {
     creatingCoordinates(cellElement, x, y);
@@ -13,30 +12,6 @@ export default class ViewCell {
     this.#x = x;
     this.#y = y;
     this.cellElement.setAttribute("id", `y_${y}-x_${x}`);
-    this.cellElement.addEventListener("mousedown", (event) => {
-      this.#resolve({
-        x: this.#x,
-        y: this.#y,
-        isActive: this.#isActive,
-        event,
-      });
-    });
-    this.cellElement.addEventListener("mouseup", (event) => {
-      this.#resolve({
-        x: this.#x,
-        y: this.#y,
-        isActive: this.#isActive,
-        event,
-      });
-    });
-    // this.cellElement.addEventListener("click", (event) => {
-    //   this.#resolve({
-    //     x: this.#x,
-    //     y: this.#y,
-    //     isActive: this.#isActive,
-    //     event,
-    //   });
-    // });
   }
 
   get cellElement() {
@@ -69,18 +44,56 @@ export default class ViewCell {
     this.cellElement.classList.add("active__possible_capture");
   }
 
-  onPromise() {
-    return new Promise((resolve) => (this.#resolve = resolve));
+  onMouseDown() {
+    return new Promise((resolve) => {
+      this.cellElement.addEventListener(
+        "mousedown",
+        (event) => {
+          resolve({
+            x: this.#x,
+            y: this.#y,
+            isActive: this.#isActive,
+            event,
+          });
+        },
+        { once: true }
+      );
+    });
+  }
+
+  onMouseUp() {
+    return new Promise((resolve) => {
+      this.cellElement.addEventListener(
+        "mouseup",
+        (event) => {
+          resolve({
+            x: this.#x,
+            y: this.#y,
+            isActive: this.#isActive,
+            event,
+          });
+        },
+        { once: true }
+      );
+    });
   }
 }
 
 function creatingCoordinates(cellElement, x, y) {
   if (x === GRID_SIZE - 1) {
-    const symbol = Math.ceil(GRID_SIZE - y);
+    let symbol = GRID_SIZE - y;
+    if (JSON.parse(localStorage.getItem("whitePlayerIsAManPlayingForBlack"))) {
+      symbol = y + 1;
+    }
+
     creatingCoordinate(cellElement, "digit", symbol);
   }
   if (y === GRID_SIZE - 1) {
-    const symbol = String.fromCharCode(Math.ceil(x) + "A".charCodeAt(0));
+    let symbol = String.fromCharCode(x + "A".charCodeAt(0));
+    if (JSON.parse(localStorage.getItem("whitePlayerIsAManPlayingForBlack"))) {
+      console.log(localStorage.getItem("whitePlayerIsAManPlayingForBlack"));
+      symbol = String.fromCharCode(GRID_SIZE - x - 1 + "A".charCodeAt(0));
+    }
     creatingCoordinate(cellElement, "character", symbol);
   }
 

@@ -24,6 +24,7 @@ export default class User {
   }
 
   async clickOnCell(eatenOnAisle, piece) {
+    // console.log(await this.#viewMoves.choiceCell());
     const { x, y, isActive, event } = await this.#viewMoves.choiceCell();
     if (event.type === "mouseup") {
       if (this.#pieces.gridPieces[y][x] === piece) {

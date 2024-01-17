@@ -23,10 +23,13 @@ export default class ViewCells {
   }
 
   async choiceCell() {
-    const cellsPromises = this.#viewGridCells
+    const cellsMouseDown = this.#viewGridCells
       .flat(Infinity)
-      .map((cell) => cell.onPromise());
-    return await Promise.any(cellsPromises);
+      .map((cell) => cell.onMouseDown());
+    const cellsMouseUp = this.#viewGridCells
+      .flat(Infinity)
+      .map((cell) => cell.onMouseUp());
+    return await Promise.any([...cellsMouseUp, ...cellsMouseDown]);
   }
 
   removeMoves() {

@@ -4,6 +4,14 @@ import { GRID_SIZE } from "../../globalConst.js";
 export default class Pawn extends Piece {
   #isActivated = false;
   #directionMoveY = this.color === "w" ? -1 : 1;
+
+  constructor({ color, x, y }) {
+    super({ color, x, y });
+    if (JSON.parse(localStorage.getItem("whitePlayerIsAManPlayingForBlack"))) {
+      this.#directionMoveY *= -1;
+    }
+  }
+
   possibleMoves() {
     const moves = [
       { x: this.x, y: this.y + this.#directionMoveY },

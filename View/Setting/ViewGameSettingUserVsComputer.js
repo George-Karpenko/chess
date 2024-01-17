@@ -8,12 +8,14 @@ export default (cb) => {
   const buttonSettings = viewButton(modalElement, "За белых");
 
   addEventClick(buttonSettings, () => {
+    localStorage.setItem("whitePlayerIsAManPlayingForBlack", false);
     localStorage.setItem("whitePlayer", "User");
     localStorage.setItem("blackPlayer", "Computer");
     buttonSettings.classList.add("active");
     buttonRestartGame.classList.remove("active");
   });
   addEventClick(buttonRestartGame, () => {
+    localStorage.setItem("whitePlayerIsAManPlayingForBlack", true);
     localStorage.setItem("whitePlayer", "Computer");
     localStorage.setItem("blackPlayer", "User");
     buttonRestartGame.classList.add("active");
