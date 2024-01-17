@@ -46,8 +46,7 @@ export default class GameController {
       const kingIsUnderCheck = this.#mapPieces.gridPieces
         .flat(Infinity)
         .find((piece) => {
-          console.log(piece.constructor.name);
-          if (piece.constructor.name === "King" && piece.color === color) {
+          if (piece?.constructor.name === "King" && piece.color === color) {
             return piece;
           }
         });
