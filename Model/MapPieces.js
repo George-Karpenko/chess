@@ -1,5 +1,5 @@
 import GridPieces from "./GridPieces.js";
-import { GRID_SIZE } from "../GlobalConst.js";
+import { GRID_SIZE } from "../globalConst.js";
 
 export default class MapPieces extends GridPieces {
   #mapPieces;

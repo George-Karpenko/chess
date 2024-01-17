@@ -1,5 +1,5 @@
 import ClassesPieces from "./Model/Pieces/index.js";
-import { GRID_SIZE } from "./GlobalConst.js";
+import { GRID_SIZE } from "./globalConst.js";
 
 import GameController from "./Controller/GameController.js";
 import Computer from "./Model/Computer.js";

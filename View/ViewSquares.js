@@ -1,4 +1,4 @@
-import { GRID_SIZE } from "../../GlobalConst.js";
+// import { GRID_SIZE } from "../../globalConst.js";
 import ViewSquare from "./ViewSquare.js";
 
 export default class ViewSquares {
@@ -37,5 +37,5 @@ export default class ViewSquares {
 }
 
 function getY(color, y) {
-  return color === "b" ? GRID_SIZE - y - 1 : y;
+  return color === "b" ? GRID_SIZE ?? 8 - y - 1 : y;
 }

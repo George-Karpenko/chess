@@ -1,4 +1,4 @@
-import { baseUrlPieces } from "../GlobalConst.js";
+import { baseUrlPieces } from "../globalConst.js";
 
 export default class ViewBasePiece {
   #pieceElement;

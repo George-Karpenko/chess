@@ -1,5 +1,5 @@
 import Piece from "../Piece.js";
-import { GRID_SIZE } from "../../GlobalConst.js";
+import { GRID_SIZE } from "../../globalConst.js";
 import { checkACheck } from "../../checkingTheGameStatus/Check.js";
 
 export default class King extends Piece {

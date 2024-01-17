@@ -1,5 +1,5 @@
 import Piece from "../Piece.js";
-import { GRID_SIZE } from "../../GlobalConst.js";
+import { GRID_SIZE } from "../../globalConst.js";
 
 export default class Bishop extends Piece {
   possibleMoves() {

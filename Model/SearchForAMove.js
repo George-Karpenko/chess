@@ -1,6 +1,6 @@
 import ClassGridPieces from "./GridPieces.js";
 import { triggerColor } from "../functions.js";
-import { GRID_SIZE } from "../GlobalConst.js";
+import { GRID_SIZE } from "../globalConst.js";
 
 export default class SearchForAMove {
   search(eatenOnAisle, gridPieces, color) {

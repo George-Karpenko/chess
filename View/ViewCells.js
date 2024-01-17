@@ -1,6 +1,6 @@
 import ViewCell from "./ViewCell.js";
 
-import { GRID_SIZE } from "../GlobalConst.js";
+import { GRID_SIZE } from "../globalConst.js";
 
 export default class ViewCells {
   #viewGridCells = [];

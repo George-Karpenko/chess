@@ -1,5 +1,5 @@
 import ViewBasePiece from "./ViewBasePiece.js";
-import { GRID_SIZE } from "../GlobalConst.js";
+import { GRID_SIZE } from "../globalConst.js";
 
 export default class ViewSquare {
   #viewPiece;
