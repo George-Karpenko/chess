@@ -76,3 +76,7 @@ button:hover {
 button.align--center {
   align-self: center;
 }
+
+.button--border {
+  border: 3px solid rgb(46, 92, 160);
+}

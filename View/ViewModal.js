@@ -94,6 +94,7 @@ export default class ViewModal {
     const modalElement = ViewGameSettingUserVsComputer();
 
     const buttonStartGame = viewButton(modalElement, "Начать игру");
+    buttonStartGame.classList.add("button--border");
 
     const button = viewButton(modalElement, "назад");
     addEventClick(button, this.gameMenu.bind(this));
