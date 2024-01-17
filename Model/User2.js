@@ -26,11 +26,6 @@ export default class User {
   async clickOnCell(eatenOnAisle, piece) {
     const { x, y, isActive, event } = await this.#viewMoves.choiceCell();
     if (event.type === "mouseup") {
-      if (this.#cloneViewPiece && !isActive) {
-        this.#cloneViewPiece.remove();
-        document.onmousemove = null;
-        this.#viewPiece.pieceElement.style.opacity = 1;
-      }
       if (this.#pieces.gridPieces[y][x] === piece) {
         return this.clickOnCell(eatenOnAisle, piece);
       }
@@ -57,6 +52,12 @@ export default class User {
         return result;
       }
       return this.clickOnCell(eatenOnAisle);
+    }
+
+    if (this.#cloneViewPiece) {
+      this.#cloneViewPiece.remove();
+      document.onmousemove = null;
+      this.#viewPiece.pieceElement.style.opacity = 1;
     }
     if (this.#pieces.gridPieces[y][x] === piece) {
       this.#viewMoves.removeMoves();
