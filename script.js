@@ -4,7 +4,8 @@ import { GRID_SIZE } from "./globalConst.js";
 import GameController from "./Controller/GameController.js";
 import Computer from "./Model/Computer.js";
 import MapPieces from "./Model/MapPieces.js";
-import User from "./Model/User2.js";
+import GridPieces from "./Model/GridPieces.js";
+import User from "./Model/User.js";
 import ViewMoves from "./View/ViewMoves.js";
 import ViewModal from "./View/ViewModal.js";
 import ViewPieces from "./View/ViewPieces.js";
@@ -23,7 +24,7 @@ let viewMoves;
 const viewPromotionChoice = new ViewPromotionChoice(promotionChoice);
 let whitePlayer, blackPlayer, gridPieces, viewPieces, mapPieces, game;
 
-const viewModal = new ViewModal(modal, createGame, restartGame);
+const viewModal = new ViewModal(modal, createGame);
 viewModal.gameMenu();
 
 function createGame() {
@@ -31,9 +32,9 @@ function createGame() {
   whitePlayer = localStorage.getItem("whitePlayer");
   blackPlayer = localStorage.getItem("blackPlayer");
   viewMoves = new ViewMoves(gameBoard);
-  gridPieces = startingPositionOfPieces();
-  viewPieces = new ViewPieces(gameBoard, gridPieces);
-  mapPieces = new MapPieces(viewPieces, gridPieces);
+  gridPieces = new GridPieces(startingPositionOfPieces());
+  viewPieces = new ViewPieces(gameBoard, gridPieces.value);
+  mapPieces = new MapPieces(viewPieces, gridPieces.value);
 
   whitePlayer = getPlayer(whitePlayer, "w");
   blackPlayer = getPlayer(blackPlayer, "b");
@@ -42,6 +43,8 @@ function createGame() {
     blackPlayer,
     whitePlayer,
     mapPieces,
+    gridPieces,
+    viewMoves,
   });
   setTimeout(async () => {
     const result = await game.start();
@@ -55,7 +58,7 @@ function endGame(result) {
 
 function restartGame() {
   gameBoard.innerHTML = null;
-  viewPieces = null;
+  // viewPieces = null;
   // viewMoves.removeOldMove();
   // viewMoves.removeMoves();
   viewModal.removeModal();
@@ -66,12 +69,13 @@ function getPlayer(player, color) {
   if (player === "User") {
     return new User({
       color,
-      pieces: mapPieces,
+      gridPieces,
+      mapPieces,
       viewMoves,
       viewPromotionChoice,
     });
   }
-  return new Computer({ color, pieces: mapPieces, viewMoves });
+  return new Computer({ color, gridPieces, viewMoves });
 }
 
 function startingPositionOfPieces() {

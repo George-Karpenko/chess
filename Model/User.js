@@ -1,95 +1,123 @@
+import replacePiece from "./promotionChoice.js";
+
 export default class User {
   #color;
-  #pieces;
+  #gridPieces;
+  #mapPieces;
   #viewMoves;
-  #piece;
-  #resolve;
-  #eatenOnAisle;
-  #myViewPieces;
-  #isMyMove;
   #viewPromotionChoice;
-  #viewOldPiece;
+  #cloneViewPiece;
+  #viewPiece;
 
-  constructor({ color, pieces, viewMoves, viewPromotionChoice }) {
+  constructor({
+    color,
+    gridPieces,
+    mapPieces,
+    viewMoves,
+    viewPromotionChoice,
+  }) {
     this.#color = color;
-    this.#pieces = pieces;
+    this.#gridPieces = gridPieces;
+    this.#mapPieces = mapPieces;
     this.#viewPromotionChoice = viewPromotionChoice;
-    this.#myViewPieces = this.#pieces.viewPieces.value.filter(
-      (viewPiece) => viewPiece.color === this.#color
-    );
     this.#viewMoves = viewMoves;
-    this.clickOnPiece();
   }
 
-  async getMove(eatenOnAisle) {
-    this.#isMyMove = true;
-    this.#myViewPieces.forEach((myViewPiece) => {
-      myViewPiece.isCursorPointer = true;
-    });
-    this.#eatenOnAisle = eatenOnAisle;
-    const result = await new Promise((resolve) => (this.#resolve = resolve));
+  async getMove(eatenOnAisle, isCheck) {
+    const result = await this.clickOnCell(eatenOnAisle, isCheck);
     return result;
   }
 
   async promotionChoice({ color, x }) {
     this.#viewPromotionChoice.create({ color, x });
-    return await this.#viewPromotionChoice.choice();
+    return replacePiece(await this.#viewPromotionChoice.choice());
   }
 
-  async clickOnPiece() {
-    this.#myViewPieces.forEach((viewPiece) => {
-      viewPiece.pieceElement.addEventListener("click", async () => {
-        if (!this.#isMyMove) return;
-
-        this.#viewMoves.removeMoves();
-
-        if (viewPiece.isActive) {
-          viewPiece.isActive = false;
-          this.#piece = null;
-          return;
-        }
-
-        if (this.#viewOldPiece) {
-          this.#viewOldPiece.isActive = false;
-        }
-
-        this.#piece = this.#pieces.gridPieces[viewPiece.y][viewPiece.x];
-        viewPiece.isActive = true;
-
-        const moves = this.#pieces.addMoves(this.#piece, this.#eatenOnAisle);
-        this.#viewMoves.addMoves(moves, this.#pieces.gridPieces);
-        this.#viewOldPiece = viewPiece;
-
-        await this.clickOnCell(viewPiece);
+  async clickOnCell(eatenOnAisle, isCheck, piece, moves) {
+    // console.log(await this.#viewMoves.choiceCell());
+    const { x, y, isActive, event } = await this.#viewMoves.choiceCell();
+    let move;
+    if (moves && moves.length) {
+      move = moves.find((move) => {
+        if (move.x === x && move.y === y) return true;
       });
-    });
-  }
-  async clickOnCell(viewPiece) {
-    const { x, y, isActive } = await this.#viewMoves.choiceCell();
-    if (isActive) {
+    }
+    if (event.type === "mouseup") {
+      if (this.#gridPieces.value[y][x] === piece) {
+        this.#cloneViewPiece.remove();
+        this.#viewPiece.pieceElement.style.opacity = 1;
+        return this.clickOnCell(eatenOnAisle, isCheck, piece, moves);
+      }
       this.#viewMoves.removeMoves();
-      this.#myViewPieces.forEach((myViewPiece) => {
-        myViewPiece.isCursorPointer = false;
-      });
-      this.#isMyMove = false;
-      this.#viewMoves.viewMove({
-        x,
-        y,
-        oldX: this.#piece.x,
-        oldY: this.#piece.y,
-      });
-      this.#resolve(
-        this.#pieces.movePiece({
-          piece: this.#piece,
-          x,
-          y,
-          eatenOnAisle: this.#eatenOnAisle,
-          promotionChoice: this.promotionChoice.bind(this),
-        })
-      );
+      if (isActive) {
+        document.onmousemove = null;
+        this.#cloneViewPiece.remove();
+        this.#viewPiece.pieceElement.classList.add("piece__fast-travel");
+        this.#viewPiece.pieceElement.style.opacity = 1;
+        this.#viewPiece.pieceElement.classList.remove("piece__fast-travel");
+        return {
+          move,
+          piece,
+        };
+      }
+      return this.clickOnCell(eatenOnAisle, isCheck, piece, moves);
+    }
+
+    if (this.#cloneViewPiece) {
+      this.#cloneViewPiece.remove();
+      document.onmousemove = null;
+      this.#viewPiece.pieceElement.style.opacity = 1;
+    }
+    if (this.#gridPieces.value[y][x] === piece) {
+      this.#viewMoves.removeMoves();
+      return this.clickOnCell(eatenOnAisle, isCheck, piece, moves);
+    }
+
+    if (!isActive) {
+      piece = this.#gridPieces.value[y][x];
+      if (!piece || piece.color !== this.#color) {
+        return this.clickOnCell(eatenOnAisle, isCheck, piece, moves);
+      }
+      this.#viewPiece = this.#mapPieces.value.get(piece);
+      this.#cloneViewPiece = this.#viewPiece.pieceElement.cloneNode(true);
+      this.#cloneViewPiece.classList.add("piece__drag");
+      this.#viewPiece.pieceElement.style.opacity = 0.5;
+      const body = document.querySelector("body");
+      this.#cloneViewPiece.style.width =
+        this.#viewPiece.pieceElement.offsetWidth + "px";
+      this.#cloneViewPiece.style.height =
+        this.#viewPiece.pieceElement.offsetHeight + "px";
+      this.#cloneViewPiece.style.left =
+        event.clientX - this.#viewPiece.pieceElement.offsetWidth / 2 + "px";
+      this.#cloneViewPiece.style.top =
+        event.clientY - this.#viewPiece.pieceElement.offsetHeight / 2 + "px";
+
+      // this.#cloneViewPiece.style.position = "fixed";
+      body.append(this.#cloneViewPiece);
+
+      document.onmousemove = (event) => {
+        this.#cloneViewPiece.style.left =
+          event.clientX - this.#cloneViewPiece.offsetWidth / 2 + "px";
+        this.#cloneViewPiece.style.top =
+          event.clientY - this.#cloneViewPiece.offsetHeight / 2 + "px";
+      };
     }
     this.#viewMoves.removeMoves();
-    this.#piece = null;
-    viewPiece.isActive = false;
+
+    if (piece && isActive) {
+      return {
+        move,
+        piece,
+      };
+    }
+
+    piece = this.#gridPieces.value[y][x];
+
+    if (!piece || piece.color !== this.#color) {
+      return await this.clickOnCell(eatenOnAisle, isCheck, piece, moves);
+    }
+    moves = this.#gridPieces.addMoves(piece, eatenOnAisle, isCheck);
+    this.#viewMoves.addMoves(moves, this.#gridPieces.value);
+    return await this.clickOnCell(eatenOnAisle, isCheck, piece, moves);
   }
 }

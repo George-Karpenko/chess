@@ -1,8 +1,8 @@
-import Piece from "../Piece.js";
+import Piece from "./Piece.js";
 import { GRID_SIZE } from "../../globalConst.js";
 
 export default class Knight extends Piece {
-  possibleMoves() {
+  checkMovesOnEmptyBoard() {
     const moves = [
       // { x: this.x - 2, y: this.y - 1 },
       // { x: this.x - 2, y: this.y + 1 },
@@ -25,9 +25,15 @@ export default class Knight extends Piece {
     );
   }
 
-  acceptableMoves({ gridPieces }) {
-    return this.possibleMoves().filter(
+  checkMovesBasedOnPieces({ gridPieces }) {
+    const moves = this.checkMovesOnEmptyBoard().filter(
       ({ x, y }) => gridPieces[y][x]?.color !== this.color
     );
+    return moves.map((move) => {
+      if (!gridPieces[move.y][move.x]) {
+        return move;
+      }
+      return { ...move, pieceUnderBattle: gridPieces[move.y][move.x] };
+    });
   }
 }

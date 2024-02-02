@@ -6,7 +6,7 @@ export default class RuleOf3RepetitionsOfAPosition extends AbstractCheck {
   #maximumNumberOfAPosition = 3;
   handle(data) {
     // TODO piece нужно вычислять (
-    const { gridPieces, isAMove } = data;
+    const { gridPieces, isAMove, piece } = data;
     const newCountPieces = countPieces(gridPieces);
     const newPosition = pieces(gridPieces).toString();
 
@@ -15,9 +15,9 @@ export default class RuleOf3RepetitionsOfAPosition extends AbstractCheck {
       this.#arrayPositions = [];
     }
 
-    // if (piece?.constructor.name === "Pawn") {
-    //   this.#arrayPositions = [];
-    // }
+    if (piece?.constructor.name === "Pawn") {
+      this.#arrayPositions = [];
+    }
 
     const position = this.#arrayPositions.find(
       (position) => position.value === newPosition && position.color === isAMove

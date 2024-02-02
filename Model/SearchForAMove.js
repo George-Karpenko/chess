@@ -1,3 +1,6 @@
+/*  Первая реализация поиска хода без рекурсии,
+    Сейчас не работает, работала быстро и достаточно хорохо.
+ */
 import ClassGridPieces from "./GridPieces.js";
 import { triggerColor } from "../functions.js";
 import { GRID_SIZE } from "../globalConst.js";
@@ -25,11 +28,8 @@ export default class SearchForAMove {
         const enemyPieces = colorPieces(gridPieces, triggerColor(color));
         const enemySumPieces = sumPieces(enemyPieces);
         return {
-          pieceX: pieceMoves.piece.x,
-          pieceY: pieceMoves.piece.y,
+          piece: pieceMoves.piece,
           move,
-          gridPieces,
-          eatenOnAisle,
           enemySumPieces,
           mySumPieces: this.searchMove(
             eatenOnAisle,
@@ -94,23 +94,19 @@ export default class SearchForAMove {
   }
   move({ move, piece, eatenOnAisle, gridPieces }) {
     const classGridPieces = new ClassGridPieces(gridPieces);
-    const { newEatenOnAisle } = classGridPieces.movePiece({
+    ({ eatenOnAisle } = classGridPieces.movePiece({
       piece,
-      x: move.x,
-      y: move.y,
-      eatenOnAisle,
-      promotionChoice: this.promotionChoice.bind(this),
-    });
+      move,
+    }));
     if (
       piece.constructor.name === "Pawn" &&
       (move.y === 0 || move.y === GRID_SIZE - 1)
     ) {
-      classGridPieces.gridPieces[move.y][move.x] =
-        classGridPieces.promotionChoice(
-          this.promotionChoice.bind(this),
-          piece,
-          move.x
-        );
+      classGridPieces.value[move.y][move.x] = classGridPieces.promotionChoice(
+        this.promotionChoice.bind(this),
+        piece,
+        move.x
+      );
     }
   }
 
@@ -125,7 +121,7 @@ function getPiecesMoves(gridPieces, eatenOnAisle, pieces) {
     try {
       return {
         piece: piece,
-        moves: piece.acceptableMovesTODO({
+        moves: piece.checkMoves({
           gridPieces,
           eatenOnAisle,
         }),

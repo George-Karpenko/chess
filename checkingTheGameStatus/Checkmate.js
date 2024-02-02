@@ -4,26 +4,17 @@ import { triggerColor } from "../functions.js";
 
 export default class Checkmate extends AbstractCheck {
   handle(data) {
-    const { gridPieces, isAMove, eatenOnAisle } = data;
-    const myPieces = colorPieces(gridPieces, isAMove);
+    const { gridPieces, isAMove, eatenOnAisle, isCheck } = data;
     const enemyPieces = colorPieces(gridPieces, triggerColor(isAMove));
-    const king = colorKing(gridPieces, triggerColor(isAMove));
     if (
       enemyPieces.every(
-        (piece) =>
-          !piece.acceptableMovesTODO({ gridPieces, eatenOnAisle }).length
+        (piece) => !piece.checkMoves({ gridPieces, eatenOnAisle }).length
       )
     ) {
-      if (
-        myPieces.some((piece) =>
-          piece.acceptableMoves({ gridPieces, eatenOnAisle }).some((move) => {
-            return move.x === king.x && move.y === king.y;
-          })
-        )
-      ) {
+      if (isCheck) {
         return { title: "Checkmate", text: `Победа ${isAMove}` };
       } else {
-        return { title: "Stalemate", text: "Пат" };
+        return { title: "Draw", text: "Пат" };
       }
     }
     return super.handle(data);

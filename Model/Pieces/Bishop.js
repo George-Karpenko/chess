@@ -1,8 +1,8 @@
-import Piece from "../Piece.js";
+import Piece from "./Piece.js";
 import { GRID_SIZE } from "../../globalConst.js";
 
 export default class Bishop extends Piece {
-  possibleMoves() {
+  checkMovesOnEmptyBoard() {
     const moves = [];
     for (let x = 0; x < GRID_SIZE; x++) {
       if (this.x === x) continue;
@@ -17,7 +17,7 @@ export default class Bishop extends Piece {
     }
     return moves;
   }
-  acceptableMoves({ gridPieces }) {
+  checkMovesBasedOnPieces({ gridPieces }) {
     const moves = [];
 
     checkMove = checkMove.bind(this);
@@ -38,7 +38,8 @@ export default class Bishop extends Piece {
         const x = additionIndex(lastX, this.x, index);
         const y = additionIndex(lastY, this.y, index);
         const piece = gridPieces[y][x];
-        if (piece?.color !== this.color) moves.push({ x, y });
+        if (piece?.color !== this.color)
+          moves.push({ x, y, pieceUnderBattle: piece });
         if (piece) break;
         moves.push({ x, y });
         index++;

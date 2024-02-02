@@ -15,24 +15,6 @@ export default class ViewPieces {
     return this.#viewPieces;
   }
 
-  async viewUpPieces(mapPieces, pieces) {
-    const arrayAwait = [];
-    pieces.forEach((piece) => {
-      const viewPiece = mapPieces.get(piece);
-      if (piece.constructor.name !== viewPiece.value) {
-        viewPiece.value = piece.constructor.name;
-      }
-      if (piece.x === viewPiece.x && piece.y === viewPiece.y) return;
-      arrayAwait.push(viewPiece.coordinate({ x: piece.x, y: piece.y }));
-    });
-    await Promise.all(arrayAwait);
-  }
-
-  async choicePiece() {
-    const piecesClicks = this.#viewPieces.map((piece) => piece.onClick());
-    return await Promise.any(piecesClicks);
-  }
-
   removePiece(viewPiece) {
     this.#viewPieces.filter((filterViewPiece) => filterViewPiece !== viewPiece);
     viewPiece.remove();

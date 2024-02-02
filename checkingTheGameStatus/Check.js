@@ -5,7 +5,7 @@ export function checkACheck(gridPieces, isAMove, eatenOnAisle) {
   const king = colorKing(isAMove);
   return !!~enemyPieces.findIndex((piece) => {
     return ~piece
-      .acceptableMoves({ gridPieces, eatenOnAisle })
+      .checkMovesBasedOnPieces({ gridPieces, eatenOnAisle })
       .findIndex((move) => move.x === king?.x && move.y === king.y);
   });
   function colorPieces(color) {

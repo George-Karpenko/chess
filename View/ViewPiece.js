@@ -46,17 +46,9 @@ export default class ViewPiece extends ViewBasePiece {
     await this.waitForTransition();
   }
 
-  onClick() {
-    return new Promise((resolve) => {
-      this.pieceElement.addEventListener(
-        "click",
-        () => {
-          resolve(this);
-        },
-        { once: true }
-      );
-    });
-  }
+  // movePiece() {
+  //   return 
+  // }
 
   waitForTransition() {
     return new Promise((resolve) => {

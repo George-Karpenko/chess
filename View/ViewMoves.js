@@ -29,9 +29,9 @@ export default class ViewMoves extends ViewCells {
     this.#moves = [];
   }
 
-  viewMove(move) {
-    const cell = this.viewGridCells[move.y][move.x];
-    const oldCell = this.viewGridCells[move.oldY][move.oldX];
+  viewMove({ move, piece }) {
+    const cell = this.viewGridCells[piece.y][piece.x];
+    const oldCell = this.viewGridCells[move.y][move.x];
     if (this.#oldMove) {
       this.removeClassMove(this.#oldMove.cell);
       this.removeClassMove(this.#oldMove.oldCell);

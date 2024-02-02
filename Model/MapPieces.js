@@ -1,63 +1,46 @@
-import GridPieces from "./GridPieces.js";
-import { GRID_SIZE } from "../globalConst.js";
-
-export default class MapPieces extends GridPieces {
-  #mapPieces;
+export default class value {
+  #value;
   #viewPieces;
 
-  constructor(viewPieces, gridStartingPositionOfPieces) {
-    super(gridStartingPositionOfPieces);
+  constructor(viewPieces, gridPieces) {
     this.#viewPieces = viewPieces;
-    const pieces = this.gridPieces.flat(Infinity).filter((piece) => piece);
-    this.#mapPieces = new Map(
+    const pieces = gridPieces.flat(Infinity).filter((piece) => piece);
+    this.#value = new Map(
       pieces.map((piece, i) => [piece, this.#viewPieces.value[i]])
     );
   }
 
-  get mapPieces() {
-    return this.#mapPieces;
+  get value() {
+    return this.#value;
   }
 
   get viewPieces() {
     return this.#viewPieces;
   }
 
-  async movePiece({ x, y, eatenOnAisle, piece, promotionChoice }) {
-    const viewUpdataPieces = [];
-    const payload =
-      (await super.movePiece({ x, y, eatenOnAisle, piece })) || {};
-    viewUpdataPieces.push(piece);
-    if (payload.rook) {
-      viewUpdataPieces.push(payload.rook);
+  async movePiece({ move, piece }) {
+    const viewPiece = this.value.get(piece);
+    const viewRook = this.value.get(move.rook);
+
+    if (move.pieceUnderBattle) {
+      this.removePiece(move.pieceUnderBattle);
     }
-    await this.viewUpPieces(viewUpdataPieces);
-    if (piece.constructor.name === "Pawn" && (y === 0 || y === GRID_SIZE - 1)) {
-      this.gridPieces[y][x] = await this.promotionChoice(
-        promotionChoice,
-        piece,
-        x
-      );
-      await this.viewUpPieces([this.gridPieces[y][x]]);
-    }
-    return payload.eatenOnAisle;
+
+    await Promise.all([
+      viewPiece.coordinate(move),
+      viewRook?.coordinate({ x: move.rook.x, y: move.rook.y }),
+    ]);
   }
 
-  async viewUpPieces(upPieces) {
-    await this.#viewPieces.viewUpPieces(this.#mapPieces, upPieces);
+  removePiece(piece) {
+    this.value.get(piece).remove();
+    this.value.delete(piece);
   }
 
-  removePiece({ x, y }) {
-    if (!this.gridPieces[y][x]) return;
-    this.viewPieces.removePiece(this.mapPieces.get(this.gridPieces[y][x]));
-    this.mapPieces.delete(this.gridPieces[y][x]);
-    super.removePiece({ x, y });
-  }
-
-  async promotionChoice(promotionChoice, piece, x) {
-    const viewPiecePromotionChoice = this.mapPieces.get(piece);
-    this.mapPieces.delete(piece);
-    piece = await super.promotionChoice(promotionChoice, piece, x);
-    this.mapPieces.set(piece, viewPiecePromotionChoice);
-    return piece;
+  async promotionChoice(oldPiece, newPiece) {
+    const viewPiecePromotionChoice = this.value.get(oldPiece);
+    viewPiecePromotionChoice.value = newPiece.constructor.name;
+    this.value.delete(oldPiece);
+    this.value.set(newPiece, viewPiecePromotionChoice);
   }
 }

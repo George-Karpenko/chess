@@ -1,4 +1,4 @@
-import { checkACheck } from "../checkingTheGameStatus/Check.js";
+import { checkACheck } from "../../checkingTheGameStatus/Check.js";
 
 export default class Piece {
   #x;
@@ -27,36 +27,48 @@ export default class Piece {
     return this.#y;
   }
 
-  removePiece({ x, y, gridPieces }) {
-    gridPieces[y][x] = null;
+  takingAPiece(piece, gridPieces) {
+    delete gridPieces[piece.y][piece.x];
+    // gridPieces[piece.y][piece.x] = null;
   }
 
-  move({ x, y, gridPieces, removePiece = this.removePiece }) {
-    gridPieces[this.y][this.x] = null;
-    if (gridPieces[y][x]) {
-      removePiece({ x, y, gridPieces });
+  move({ move, gridPieces }) {
+    if (move?.pieceUnderBattle) {
+      this.takingAPiece(move.pieceUnderBattle, gridPieces);
     }
-    this.x = x;
-    this.y = y;
-    gridPieces[y][x] = this;
+    gridPieces[this.y][this.x] = null;
+    this.x = move.x;
+    this.y = move.y;
+    gridPieces[this.y][this.x] = this;
   }
 
-  acceptableMovesTODO({ gridPieces, eatenOnAisle }) {
-    const moves = this.acceptableMoves({ gridPieces, eatenOnAisle });
+  checkMoves({ gridPieces, eatenOnAisle, isCheck }) {
+    const moves = this.checkMovesBasedOnPieces({
+      gridPieces,
+      eatenOnAisle,
+      isCheck,
+    });
     return moves.filter((move) => {
       const cloneGridPieces = clone(gridPieces);
       const piece = cloneGridPieces[this.y][this.x];
-      piece.move({ x: move.x, y: move.y, gridPieces: cloneGridPieces });
+      try {
+        piece.move({ move: clone(move), gridPieces: cloneGridPieces });
+      } catch (error) {
+        console.log(piece);
+        console.log(move);
+      }
       return !checkACheck(cloneGridPieces, piece.color, eatenOnAisle);
     });
   }
 
-  acceptableMoves() {
-    throw new Error('The "acceptableMoves" method has not been created');
+  checkMovesBasedOnPieces() {
+    throw new Error(
+      'The "checkMovesBasedOnPieces" method has not been created'
+    );
   }
 
-  possibleMoves() {
-    throw new Error('The "possibleMoves" method has not been created');
+  checkMovesOnEmptyBoard() {
+    throw new Error('The "checkMovesOnEmptyBoard" method has not been created');
   }
 }
 
@@ -83,9 +95,7 @@ function clone(obj) {
   // Handle Object (functions are skipped)
   if (obj instanceof Object) {
     var copy = new obj.constructor({
-      pieceContainer: null,
       color: obj.color,
-      value: obj.value,
       x: obj.x,
       y: obj.y,
     });

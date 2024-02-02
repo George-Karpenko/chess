@@ -9,10 +9,9 @@ import viewAppearance from "./Setting/viewAppearance.js";
 
 export default class ViewModal {
   #element;
-  constructor(element, createGame, restartGame) {
+  constructor(element, createGame) {
     this.#element = element;
     this.createGame = createGame;
-    this.restartGame = restartGame;
   }
 
   get element() {
@@ -80,12 +79,14 @@ export default class ViewModal {
   gameUser(cb) {
     localStorage.setItem("whitePlayer", "User");
     localStorage.setItem("blackPlayer", "User");
+    localStorage.setItem("whitePlayerIsAManPlayingForBlack", false);
     cb();
   }
 
   gameComputer(cb) {
     localStorage.setItem("whitePlayer", "Computer");
     localStorage.setItem("blackPlayer", "Computer");
+    localStorage.setItem("whitePlayerIsAManPlayingForBlack", false);
     cb();
   }
 

@@ -1,35 +1,28 @@
 import replacePiece from "./promotionChoice.js";
 
 export default class GridPieces {
-  #gridPieces;
+  #value;
 
   constructor(gridPieces) {
-    this.#gridPieces = gridPieces;
+    this.#value = gridPieces;
   }
 
-  get gridPieces() {
-    return this.#gridPieces;
+  get value() {
+    return this.#value;
   }
 
-  removePiece({ x, y }) {
-    if (!this.#gridPieces[y][x]) return;
-    this.#gridPieces[y][x] = null;
-  }
-
-  addMoves(piece, eatenOnAisle) {
-    return piece.acceptableMovesTODO({
-      gridPieces: this.#gridPieces,
+  addMoves(piece, eatenOnAisle, isCheck) {
+    return piece.checkMoves({
+      gridPieces: this.value,
       eatenOnAisle,
+      isCheck,
     });
   }
 
-  async movePiece({ x, y, eatenOnAisle, piece }) {
+  async movePiece({ move, piece }) {
     return piece.move({
-      x,
-      y,
-      eatenOnAisle: eatenOnAisle,
-      gridPieces: this.gridPieces,
-      removePiece: this.removePiece.bind(this),
+      move,
+      gridPieces: this.value,
     });
   }
 
@@ -41,5 +34,4 @@ export default class GridPieces {
       })
     );
   }
-  async viewUpPieces() {}
 }

@@ -1,4 +1,4 @@
-import Piece from "../Piece.js";
+import Piece from "./Piece.js";
 import { GRID_SIZE } from "../../globalConst.js";
 
 export default class Pawn extends Piece {
@@ -12,24 +12,32 @@ export default class Pawn extends Piece {
     }
   }
 
-  possibleMoves() {
+  checkMovesOnEmptyBoard() {
+    let isPromotionChoice = false;
+    if (
+      this.y + this.#directionMoveY === 0 ||
+      this.y + this.#directionMoveY === GRID_SIZE - 1
+    ) {
+      isPromotionChoice = true;
+    }
     const moves = [
-      { x: this.x, y: this.y + this.#directionMoveY },
-      { x: this.x - 1, y: this.y + this.#directionMoveY },
-      { x: this.x + 1, y: this.y + this.#directionMoveY },
+      { x: this.x, y: this.y + this.#directionMoveY, isPromotionChoice },
+      { x: this.x - 1, y: this.y + this.#directionMoveY, isPromotionChoice },
+      { x: this.x + 1, y: this.y + this.#directionMoveY, isPromotionChoice },
     ];
     if (!this.#isActivated) {
       moves.push({
         x: this.x,
         y: this.y + this.#directionMoveY * 2,
+        eatenOnAisle: this,
       });
     }
     return moves.filter(
       ({ x, y }) => x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE
     );
   }
-  acceptableMoves({ gridPieces, eatenOnAisle }) {
-    return this.possibleMoves().filter(({ x, y }) => {
+  checkMovesBasedOnPieces({ gridPieces, eatenOnAisle }) {
+    const moves = this.checkMovesOnEmptyBoard().filter(({ x, y }) => {
       const piece = gridPieces[y][x];
       const pieceInFrontOfPawn = gridPieces[this.y + this.#directionMoveY][x];
 
@@ -40,17 +48,17 @@ export default class Pawn extends Piece {
       if (x !== this.x && !piece) return false;
       return true;
     });
+    return moves.map((move) => {
+      if (move.x === this.x) return move;
+      if (gridPieces[move.y][move.x]) {
+        return { ...move, pieceUnderBattle: gridPieces[move.y][move.x] };
+      }
+      return { ...move, pieceUnderBattle: eatenOnAisle };
+    });
   }
 
-  move({ x, y, eatenOnAisle, gridPieces, removePiece }) {
-    let isTakingOnPass = !this.#isActivated && Math.abs(this.y - y) === 2;
+  move({ move, gridPieces }) {
     this.#isActivated = true;
-    if (eatenOnAisle?.y === this.y && x === eatenOnAisle.x) {
-      removePiece({ x: eatenOnAisle.x, y: eatenOnAisle.y, gridPieces });
-    }
-    super.move({ x, y, gridPieces, removePiece });
-    if (isTakingOnPass) {
-      return { eatenOnAisle: this };
-    }
+    super.move({ move, gridPieces });
   }
 }

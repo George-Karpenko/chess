@@ -1,68 +1,108 @@
 import GameEnd from "../checkingTheGameStatus/GameEnd.js";
 import { checkACheck } from "../checkingTheGameStatus/Check.js";
+import { triggerColor } from "../functions.js";
 
 export default class GameController {
-  #eatenOnAisle;
-  #blackPlayer;
-  #whitePlayer;
+  #players;
   #mapPieces;
+  #gridPieces;
+  #viewMoves;
   #gameEnd;
-  #isColorPlayerWhite = true;
+  #currentColorPlayer = "w";
   #viewKingIsUnderCheck;
-  constructor({ blackPlayer, whitePlayer, mapPieces }) {
-    this.#blackPlayer = blackPlayer;
-    this.#whitePlayer = whitePlayer;
+  constructor({ blackPlayer, whitePlayer, mapPieces, gridPieces, viewMoves }) {
+    this.#players = {
+      b: blackPlayer,
+      w: whitePlayer,
+    };
     this.#mapPieces = mapPieces;
-    this.#gameEnd = new GameEnd({
-      gridPieces: this.#mapPieces.gridPieces,
+    this.#gridPieces = gridPieces;
+    this.#viewMoves = viewMoves;
+    this.#gameEnd = new GameEnd();
+    this.#gameEnd.choiceRuleOf3RepetitionsOfAPosition({
+      gridPieces: this.#gridPieces.value,
       isAMove: "b",
     });
   }
 
-  async start() {
-    if (this.#isColorPlayerWhite) {
-      this.#eatenOnAisle = await this.#whitePlayer.getMove(this.#eatenOnAisle);
-    } else {
-      this.#eatenOnAisle = await this.#blackPlayer.getMove(this.#eatenOnAisle);
-    }
-    const result = this.#gameEnd.choice({
-      gridPieces: this.#mapPieces.gridPieces,
-      isAMove: !this.#isColorPlayerWhite ? "b" : "w",
-      // piece: this.piece,
-      eatenOnAisle: this.#eatenOnAisle,
+  async start(eatenOnAisle = null, isCheck = false) {
+    const { move, piece } = await this.#players[
+      this.#currentColorPlayer
+    ].getMove(eatenOnAisle, this.#gameEnd, isCheck);
+
+    eatenOnAisle = move.eatenOnAisle;
+
+    this.#viewMoves.viewMove({
+      move,
+      piece,
     });
-    if (this.#viewKingIsUnderCheck) {
-      this.#viewKingIsUnderCheck.classList.remove("king-is-under-check");
-      this.#viewKingIsUnderCheck = null;
+    console.log({ move, piece });
+    await this.#mapPieces.movePiece({ move, piece });
+    if (move.isPromotionChoice) {
+      let newPiece = await this.#players[
+        this.#currentColorPlayer
+      ].promotionChoice({
+        color: this.#currentColorPlayer,
+        x: move.x,
+      });
+      this.#gridPieces.value[newPiece.y][newPiece.x] = newPiece;
+      this.#mapPieces.promotionChoice(piece, newPiece);
     }
-    if (
-      checkACheck(
-        this.#mapPieces.gridPieces,
-        this.#isColorPlayerWhite ? "b" : "w",
-        this.#eatenOnAisle
-      )
-    ) {
-      const color = this.#isColorPlayerWhite ? "b" : "w";
-      const kingIsUnderCheck = this.#mapPieces.gridPieces
-        .flat(Infinity)
-        .find((piece) => {
-          if (piece?.constructor.name === "King" && piece.color === color) {
-            return piece;
-          }
-        });
-      this.#viewKingIsUnderCheck =
-        this.#mapPieces.mapPieces.get(kingIsUnderCheck).pieceElement;
-      this.#viewKingIsUnderCheck.classList.add("king-is-under-check");
-    }
+    this.#gridPieces.movePiece({ move, piece });
+
+    isCheck = checkACheck(
+      this.#gridPieces.value,
+      triggerColor(this.#currentColorPlayer),
+      eatenOnAisle
+    );
+
+    this.#viewKingIsUnderCheck = highlightingTheKingAtCheck({
+      isCheck,
+      gridPieces: this.#gridPieces.value,
+      mapPieces: this.#mapPieces.value,
+      currentColorPlayer: this.#currentColorPlayer,
+      viewKingIsUnderCheck: this.#viewKingIsUnderCheck,
+    });
+
+    const result = this.#gameEnd.choice({
+      gridPieces: this.#gridPieces.value,
+      isAMove: this.#currentColorPlayer,
+      piece,
+      eatenOnAisle,
+      isCheck,
+    });
 
     if (result) {
       return result;
     }
-    this.triggerIsColorPlayerWhite();
+    this.#currentColorPlayer = triggerColor(this.#currentColorPlayer);
 
-    return await this.start();
+    return await this.start(eatenOnAisle, isCheck);
   }
-  triggerIsColorPlayerWhite() {
-    this.#isColorPlayerWhite = !this.#isColorPlayerWhite;
+}
+
+function highlightingTheKingAtCheck({
+  isCheck,
+  viewKingIsUnderCheck,
+  gridPieces,
+  currentColorPlayer,
+  mapPieces,
+}) {
+  if (viewKingIsUnderCheck) {
+    viewKingIsUnderCheck.classList.remove("king-is-under-check");
+    viewKingIsUnderCheck = null;
   }
+  if (isCheck) {
+    const kingIsUnderCheck = gridPieces.flat(Infinity).find((piece) => {
+      if (
+        piece?.constructor.name === "King" &&
+        piece.color !== currentColorPlayer
+      ) {
+        return piece;
+      }
+    });
+    viewKingIsUnderCheck = mapPieces.get(kingIsUnderCheck).pieceElement;
+    viewKingIsUnderCheck.classList.add("king-is-under-check");
+  }
+  return viewKingIsUnderCheck;
 }

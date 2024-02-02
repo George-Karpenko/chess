@@ -1,4 +1,4 @@
-import Piece from "../Piece.js";
+import Piece from "./Piece.js";
 import { GRID_SIZE } from "../../globalConst.js";
 
 export default class Rook extends Piece {
@@ -8,7 +8,7 @@ export default class Rook extends Piece {
     return this.#isActivated;
   }
 
-  possibleMoves() {
+  checkMovesOnEmptyBoard() {
     const moves = [...Array(GRID_SIZE - 1).keys()].map((x) => {
       if (x >= this.x) {
         return { y: this.y, x: x + 1 };
@@ -26,7 +26,7 @@ export default class Rook extends Piece {
     return moves;
   }
 
-  acceptableMoves({ gridPieces }) {
+  checkMovesBasedOnPieces({ gridPieces }) {
     checkingMovesOnAStraightLine = checkingMovesOnAStraightLine.bind(this);
     return [
       ...checkingMovesOnAStraightLine(this.x - 1, -1, "y"),
@@ -60,28 +60,31 @@ export default class Rook extends Piece {
           continue;
         }
         if (piece.color !== this.color) {
-          moves.push(move);
+          moves.push({ ...move, pieceUnderBattle: piece });
         }
         break;
       }
+
       return moves;
     }
   }
 
-  move({ x, y, gridPieces, removePiece }) {
-    super.move({ x, y, gridPieces, removePiece });
+  move({ move, gridPieces }) {
+    super.move({ move, gridPieces });
     this.#isActivated = true;
   }
 
-  castling() {
+  castling(gridPieces) {
+    let rookPositionDuringCastling;
     this.#isActivated = true;
     if (this.x === 0) {
-      const rookPositionDuringCastling = 3;
-      this.x = rookPositionDuringCastling;
+      rookPositionDuringCastling = 3;
     }
     if (this.x === GRID_SIZE - 1) {
-      const rookPositionDuringCastling = 5;
-      this.x = rookPositionDuringCastling;
+      rookPositionDuringCastling = 5;
     }
+    gridPieces[this.y][this.x] = null;
+    this.x = rookPositionDuringCastling;
+    gridPieces[this.y][this.x] = this;
   }
 }

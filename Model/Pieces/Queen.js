@@ -1,19 +1,19 @@
 import Rook from "./Rook.js";
 import Bishop from "./Bishop.js";
-import Piece from "../Piece.js";
+import Piece from "./Piece.js";
 
 export default class Queen extends Piece {
-  acceptableMoves({ gridPieces }) {
+  checkMovesBasedOnPieces({ gridPieces }) {
     return [
-      ...Bishop.prototype.acceptableMoves.call(this, { gridPieces }),
-      ...Rook.prototype.acceptableMoves.call(this, { gridPieces }),
+      ...Bishop.prototype.checkMovesBasedOnPieces.call(this, { gridPieces }),
+      ...Rook.prototype.checkMovesBasedOnPieces.call(this, { gridPieces }),
     ];
   }
 
-  possibleMoves() {
+  checkMovesOnEmptyBoard() {
     return [
-      ...Bishop.prototype.possibleMoves.bind(this),
-      ...Rook.prototype.possibleMoves.bind(this),
+      ...Bishop.prototype.checkMovesOnEmptyBoard.bind(this),
+      ...Rook.prototype.checkMovesOnEmptyBoard.bind(this),
     ];
   }
 }

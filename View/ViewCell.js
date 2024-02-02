@@ -11,7 +11,7 @@ export default class ViewCell {
     this.#cellElement = cellElement;
     this.#x = x;
     this.#y = y;
-    this.cellElement.setAttribute("id", `y_${y}-x_${x}`);
+    // this.cellElement.setAttribute("id", `y_${y}-x_${x}`);
   }
 
   get cellElement() {
