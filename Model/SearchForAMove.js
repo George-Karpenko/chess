@@ -1,16 +1,21 @@
-/*  Первая реализация поиска хода без рекурсии,
-    Сейчас не работает, работала быстро и достаточно хорохо.
- */
+/*  
+  Первая реализация поиска хода без рекурсии,
+*/
 import ClassGridPieces from "./GridPieces.js";
 import { triggerColor } from "../functions.js";
 import { GRID_SIZE } from "../globalConst.js";
 
 export default class SearchForAMove {
-  search(eatenOnAisle, gridPieces, color) {
+  search(eatenOnAisle, gridPieces, color, isCheck) {
     const cloneGridPieces = clone(gridPieces);
     const cloneEatenOnAisle = clone(eatenOnAisle);
     const myPieces = colorPieces(gridPieces, color);
-    const piecesMoves = getPiecesMoves(gridPieces, eatenOnAisle, myPieces);
+    const piecesMoves = getPiecesMoves(
+      gridPieces,
+      eatenOnAisle,
+      myPieces,
+      isCheck
+    );
 
     let searchMoves = piecesMoves.map((pieceMoves) => {
       return pieceMoves.moves.map((move) => {
@@ -34,11 +39,13 @@ export default class SearchForAMove {
           mySumPieces: this.searchMove(
             eatenOnAisle,
             gridPieces,
-            triggerColor(color)
+            triggerColor(color),
+            isCheck
           ),
           countMoves:
-            getPiecesMoves(gridPieces, eatenOnAisle, myPieces).flat(Infinity)
-              .length * 0.1,
+            getPiecesMoves(gridPieces, eatenOnAisle, myPieces, isCheck).flat(
+              Infinity
+            ).length * 0.1,
           color: triggerColor(color),
         };
       });
@@ -64,11 +71,16 @@ export default class SearchForAMove {
     const rand = Math.floor(Math.random() * searchMoves.length);
     return searchMoves[rand];
   }
-  searchMove(eatenOnAisle, gridPieces, color) {
+  searchMove(eatenOnAisle, gridPieces, color, isCheck) {
     const cloneGridPieces = clone(gridPieces);
     const cloneEatenOnAisle = eatenOnAisle;
     const myPieces = colorPieces(gridPieces, color);
-    const piecesMoves = getPiecesMoves(gridPieces, eatenOnAisle, myPieces);
+    const piecesMoves = getPiecesMoves(
+      gridPieces,
+      eatenOnAisle,
+      myPieces,
+      isCheck
+    );
 
     let searchMoves = piecesMoves.map((pieceMoves) => {
       return pieceMoves.moves.map((move) => {
@@ -116,7 +128,7 @@ export default class SearchForAMove {
     return { color, value: arr[0], x, y: color === "w" ? 0 : GRID_SIZE - 1 };
   }
 }
-function getPiecesMoves(gridPieces, eatenOnAisle, pieces) {
+function getPiecesMoves(gridPieces, eatenOnAisle, pieces, isCheck) {
   pieces = pieces.map((piece) => {
     try {
       return {
@@ -124,6 +136,7 @@ function getPiecesMoves(gridPieces, eatenOnAisle, pieces) {
         moves: piece.checkMoves({
           gridPieces,
           eatenOnAisle,
+          isCheck,
         }),
       };
     } catch (error) {

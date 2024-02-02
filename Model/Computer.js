@@ -16,29 +16,30 @@ export default class Computer {
   }
 
   async getMove(eatenOnAisle, gameEnd, isCheck) {
-    const move = await this.searchBestMove(
-      eatenOnAisle,
-      this.#gridPieces,
-      this.#color,
-      gameEnd,
-      isCheck
-    );
-    return move.best_move;
-    // const move = await new Promise((resolve) => {
-    //   setTimeout(() => {
-    //     resolve(
-    //       this.#searchForAMove.search(
-    //         eatenOnAisle,
-    //         this.#gridPieces.value
-    //         // triggerColor(color),
-    //         // nextGameState,
-    //         // isCheck,
-    //         // depth - 1
-    //       )
-    //     );
-    //   }, 0);
+    // Реализация поиска хода с рекурсией, очень долго ищет ход
+
+    // const move = await this.searchBestMove({
+    //   eatenOnAisle,
+    //   gridPieces: this.#gridPieces,
+    //   color: this.#color,
+    //   gameEnd,
+    //   isCheck,
+    //   depth: 2,
     // });
-    // return move;
+    // return move.best_move;
+    const move = await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(
+          this.#searchForAMove.search(
+            eatenOnAisle,
+            this.#gridPieces.value,
+            this.#color,
+            isCheck
+          )
+        );
+      }, 0);
+    });
+    return move;
   }
   promotionChoice({ color, x, piece }) {
     return replacePiece({
@@ -49,14 +50,14 @@ export default class Computer {
     });
   }
 
-  async searchBestMove(
+  async searchBestMove({
     eatenOnAisle,
     gridPieces,
     color,
     gameEnd,
     isCheck,
-    depth = 2
-  ) {
+    depth,
+  }) {
     const myPieces = colorPieces(gridPieces.value, color);
     const availablePiecesMoves = myPieces.map((piece) => {
       let moves = piece.checkMoves({
