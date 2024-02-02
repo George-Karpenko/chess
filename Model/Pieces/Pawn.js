@@ -1,9 +1,9 @@
 import Piece from "./Piece.js";
-import { GRID_SIZE } from "../../globalConst.js";
+import { GRID_SIZE, WHITE } from "../../globalConst.js";
 
 export default class Pawn extends Piece {
   #isActivated = false;
-  #directionMoveY = this.color === "w" ? -1 : 1;
+  #directionMoveY = this.color === WHITE ? -1 : 1;
 
   constructor({ color, x, y }) {
     super({ color, x, y });

@@ -1,22 +1,11 @@
-import { triggerColor } from "../functions.js";
+import { triggerColor, colorPieces, colorKing } from "../functions.js";
 
-export function checkACheck(gridPieces, isAMove, eatenOnAisle) {
-  const enemyPieces = colorPieces(triggerColor(isAMove));
-  const king = colorKing(isAMove);
+export function checkACheck(gridPieces, color, eatenOnAisle) {
+  const enemyPieces = colorPieces(gridPieces, triggerColor(color));
+  const king = colorKing(gridPieces, color);
   return !!~enemyPieces.findIndex((piece) => {
     return ~piece
       .checkMovesBasedOnPieces({ gridPieces, eatenOnAisle })
       .findIndex((move) => move.x === king?.x && move.y === king.y);
   });
-  function colorPieces(color) {
-    return [].concat(...gridPieces).filter((piece) => piece?.color === color);
-  }
-
-  function colorKing(color) {
-    return []
-      .concat(...gridPieces)
-      .find(
-        (piece) => piece?.constructor.name === "King" && piece.color === color
-      );
-  }
 }

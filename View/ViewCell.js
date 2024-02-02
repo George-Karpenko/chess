@@ -11,7 +11,6 @@ export default class ViewCell {
     this.#cellElement = cellElement;
     this.#x = x;
     this.#y = y;
-    // this.cellElement.setAttribute("id", `y_${y}-x_${x}`);
   }
 
   get cellElement() {
@@ -91,7 +90,6 @@ function creatingCoordinates(cellElement, x, y) {
   if (y === GRID_SIZE - 1) {
     let symbol = String.fromCharCode(x + "A".charCodeAt(0));
     if (JSON.parse(localStorage.getItem("whitePlayerIsAManPlayingForBlack"))) {
-      console.log(localStorage.getItem("whitePlayerIsAManPlayingForBlack"));
       symbol = String.fromCharCode(GRID_SIZE - x - 1 + "A".charCodeAt(0));
     }
     creatingCoordinate(cellElement, "character", symbol);

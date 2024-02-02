@@ -1,9 +1,11 @@
+// TODO дописать объект
+
 export default {
-  draw: "Ничья",
-  victoryColor: (color) => `Победа ${color}`,
-  startOver: "Начать сначала",
-  chooseAShape: "Выбери фигуру",
-  withoutAdvancingPawns50Moves: "50 ходов без продвижения пешек",
-  stalemate : "Пат",
-  repeatingAPosition : "Позиция повторилась трижды",
-}
+  Draw: "Ничья",
+  Checkmate: "Мат",
+  "black victory": "Победа чёрных",
+  "white victory": "Победа белых",
+  "50 moves without advancing pawns": "50 ходов без продвижения пешек",
+  Stalemate: "Пат",
+  "The position was repeated three times": "Позиция повторилась трижды",
+};

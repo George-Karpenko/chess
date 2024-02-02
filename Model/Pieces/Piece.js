@@ -1,4 +1,5 @@
 import { checkACheck } from "../../checkingTheGameStatus/Check.js";
+import { cloneArrayGridPieces, deepClone } from "../../functions.js";
 
 export default class Piece {
   #x;
@@ -29,7 +30,6 @@ export default class Piece {
 
   takingAPiece(piece, gridPieces) {
     delete gridPieces[piece.y][piece.x];
-    // gridPieces[piece.y][piece.x] = null;
   }
 
   move({ move, gridPieces }) {
@@ -49,15 +49,10 @@ export default class Piece {
       isCheck,
     });
     return moves.filter((move) => {
-      const cloneGridPieces = clone(gridPieces);
-      const piece = cloneGridPieces[this.y][this.x];
-      try {
-        piece.move({ move: clone(move), gridPieces: cloneGridPieces });
-      } catch (error) {
-        console.log(piece);
-        console.log(move);
-      }
-      return !checkACheck(cloneGridPieces, piece.color, eatenOnAisle);
+      const copyGridPieces = cloneArrayGridPieces(gridPieces);
+      const piece = copyGridPieces[this.y][this.x];
+      piece.move({ move: deepClone(move), gridPieces: copyGridPieces });
+      return !checkACheck(copyGridPieces, piece.color, eatenOnAisle);
     });
   }
 
@@ -70,41 +65,4 @@ export default class Piece {
   checkMovesOnEmptyBoard() {
     throw new Error('The "checkMovesOnEmptyBoard" method has not been created');
   }
-}
-
-function clone(obj) {
-  // Handle the 3 simple types, and null or undefined
-  if (null == obj || "object" != typeof obj) return obj;
-
-  // Handle Date
-  if (obj instanceof Date) {
-    var copy = new Date();
-    copy.setTime(obj.getTime());
-    return copy;
-  }
-
-  // Handle Array
-  if (obj instanceof Array) {
-    var copy = [];
-    for (var i = 0, len = obj.length; i < len; ++i) {
-      copy[i] = clone(obj[i]);
-    }
-    return copy;
-  }
-
-  // Handle Object (functions are skipped)
-  if (obj instanceof Object) {
-    var copy = new obj.constructor({
-      color: obj.color,
-      x: obj.x,
-      y: obj.y,
-    });
-    for (var attr in obj) {
-      if (obj.hasOwnProperty(attr) && !(obj[attr] instanceof Function))
-        copy[attr] = clone(obj[attr]);
-    }
-    return copy;
-  }
-
-  throw new Error("Unable to copy obj! Its type isn't supported.");
 }

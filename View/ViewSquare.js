@@ -1,5 +1,5 @@
 import ViewBasePiece from "./ViewBasePiece.js";
-import { GRID_SIZE } from "../globalConst.js";
+import { GRID_SIZE, WHITE } from "../globalConst.js";
 
 export default class ViewSquare {
   #viewPiece;
@@ -43,7 +43,7 @@ export default class ViewSquare {
         () => {
           resolve({
             x: this.#x,
-            y: this.viewPiece.color === "w" ? 0 : GRID_SIZE - 1,
+            y: this.viewPiece.color === WHITE ? 0 : GRID_SIZE - 1,
             color: this.viewPiece.color,
             value: this.viewPiece.value,
           });

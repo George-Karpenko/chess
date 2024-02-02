@@ -2,10 +2,10 @@ import AbstractCheck from "./AbstractCheck.js";
 
 export default class Checkmate extends AbstractCheck {
   handle(data) {
-    const { isCheck, hasOpponentMoves, color } = data;
+    const { isCheck, hasOpponentMoves } = data;
     if (hasOpponentMoves) {
-      if (isCheck) {
-        return { title: "Checkmate", text: `${color} victory` };
+      if (!isCheck) {
+        return { title: "Draw", text: "Stalemate" };
       }
     }
     return super.handle(data);

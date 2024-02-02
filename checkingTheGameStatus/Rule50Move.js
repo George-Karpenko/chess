@@ -5,7 +5,6 @@ export default class Rule50Move extends AbstractCheck {
   #countPieces;
   #maximumNumberOfMovesForTwoPlayers = 100;
   handle(data) {
-    // TODO piece нужно вычислять (
     const { gridPieces, piece } = data;
     const newCountPieces = countPieces(gridPieces);
 
@@ -21,7 +20,7 @@ export default class Rule50Move extends AbstractCheck {
     this.#countMoves++;
 
     if (this.#countMoves === this.#maximumNumberOfMovesForTwoPlayers) {
-      return { title: "Draw", text: "50 ходов без продвижения пешек" };
+      return { title: "Draw", text: "50 moves without advancing pawns" };
     }
 
     return super.handle(data);

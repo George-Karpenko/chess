@@ -1,27 +1,26 @@
 import GameEnd from "../checkingTheGameStatus/GameEnd.js";
 import { checkACheck } from "../checkingTheGameStatus/Check.js";
-import { triggerColor } from "../functions.js";
+import { colorKing, triggerColor } from "../functions.js";
+import { WHITE, BLACK } from "../globalConst.js";
 
 export default class GameController {
-  #players;
+  #players = {};
   #mapPieces;
   #gridPieces;
   #viewMoves;
   #gameEnd;
-  #currentColorPlayer = "w";
+  #currentColorPlayer = WHITE;
   #viewKingIsUnderCheck;
   constructor({ blackPlayer, whitePlayer, mapPieces, gridPieces, viewMoves }) {
-    this.#players = {
-      b: blackPlayer,
-      w: whitePlayer,
-    };
+    this.#players[BLACK] = blackPlayer;
+    this.#players[WHITE] = whitePlayer;
     this.#mapPieces = mapPieces;
     this.#gridPieces = gridPieces;
     this.#viewMoves = viewMoves;
     this.#gameEnd = new GameEnd();
     this.#gameEnd.choiceRuleOf3RepetitionsOfAPosition({
       gridPieces: this.#gridPieces.value,
-      isAMove: "b",
+      color: BLACK,
     });
   }
 
@@ -36,7 +35,7 @@ export default class GameController {
       move,
       piece,
     });
-    console.log({ move, piece });
+
     await this.#mapPieces.movePiece({ move, piece });
     if (move.isPromotionChoice) {
       let newPiece = await this.#players[
@@ -48,6 +47,7 @@ export default class GameController {
       this.#gridPieces.value[newPiece.y][newPiece.x] = newPiece;
       this.#mapPieces.promotionChoice(piece, newPiece);
     }
+
     this.#gridPieces.movePiece({ move, piece });
 
     isCheck = checkACheck(
@@ -66,10 +66,15 @@ export default class GameController {
 
     const result = this.#gameEnd.choice({
       gridPieces: this.#gridPieces.value,
-      isAMove: this.#currentColorPlayer,
+      color: this.#currentColorPlayer,
       piece,
       eatenOnAisle,
       isCheck,
+      hasOpponentMoves: hasOpponentMoves(
+        this.#gridPieces.value,
+        this.#currentColorPlayer,
+        eatenOnAisle
+      ),
     });
 
     if (result) {
@@ -81,6 +86,15 @@ export default class GameController {
   }
 }
 
+function hasOpponentMoves(gridPieces, color, eatenOnAisle) {
+  color = triggerColor(color);
+  const enemyPieces = []
+    .concat(...gridPieces)
+    .filter((piece) => piece?.color === color);
+  return enemyPieces.every(
+    (piece) => !piece.checkMoves({ gridPieces, eatenOnAisle }).length
+  );
+}
 function highlightingTheKingAtCheck({
   isCheck,
   viewKingIsUnderCheck,
@@ -93,14 +107,10 @@ function highlightingTheKingAtCheck({
     viewKingIsUnderCheck = null;
   }
   if (isCheck) {
-    const kingIsUnderCheck = gridPieces.flat(Infinity).find((piece) => {
-      if (
-        piece?.constructor.name === "King" &&
-        piece.color !== currentColorPlayer
-      ) {
-        return piece;
-      }
-    });
+    const kingIsUnderCheck = colorKing(
+      gridPieces,
+      triggerColor(currentColorPlayer)
+    );
     viewKingIsUnderCheck = mapPieces.get(kingIsUnderCheck).pieceElement;
     viewKingIsUnderCheck.classList.add("king-is-under-check");
   }

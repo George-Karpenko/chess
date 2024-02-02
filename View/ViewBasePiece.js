@@ -1,4 +1,4 @@
-import { baseUrlPieces } from "../globalConst.js";
+import { BASE_URL_IMAGES_OF_PIECES, WHITE, BLACK } from "../globalConst.js";
 
 export default class ViewBasePiece {
   #pieceElement;
@@ -10,9 +10,9 @@ export default class ViewBasePiece {
     this.#value = value;
     this.#pieceElement = document.createElement("img");
     this.#pieceElement.classList.add("piece");
-    this.#pieceElement.src = `${baseUrlPieces}${localStorage.getItem(
+    this.#pieceElement.src = `${BASE_URL_IMAGES_OF_PIECES}${localStorage.getItem(
       "pieces"
-    )}/${color + designationInRecord[value]}.png`;
+    )}/${colorAdapter[color] + designationInRecord[value]}.png`;
     pieceContainer.append(this.#pieceElement);
   }
 
@@ -30,9 +30,9 @@ export default class ViewBasePiece {
 
   set value(value) {
     this.#value = value;
-    this.pieceElement.src = `${baseUrlPieces}${localStorage.getItem(
+    this.pieceElement.src = `${BASE_URL_IMAGES_OF_PIECES}${localStorage.getItem(
       "pieces"
-    )}/${this.color + designationInRecord[value]}.png`;
+    )}/${colorAdapter[this.color] + designationInRecord[value]}.png`;
   }
 
   remove() {
@@ -48,3 +48,10 @@ const designationInRecord = {
   Queen: "Q",
   Rook: "R",
 };
+
+const colorAdapter = (() => {
+  const result = {};
+  result[WHITE] = "w";
+  result[BLACK] = "b";
+  return result;
+})();

@@ -6,6 +6,7 @@ import viewIcon from "./TagElement/viewIcon.js";
 
 import ViewGameSettingUserVsComputer from "./Setting/ViewGameSettingUserVsComputer.js";
 import viewAppearance from "./Setting/viewAppearance.js";
+import Locale from "../locale/ru.js";
 
 export default class ViewModal {
   #element;
@@ -25,8 +26,8 @@ export default class ViewModal {
 
   gameEnd({ title, text }) {
     const modalElement = document.createElement("div");
-    viewTitle(modalElement, title);
-    viewText(modalElement, text);
+    viewTitle(modalElement, Locale[title]);
+    viewText(modalElement, Locale[text]);
     const buttonRestartGame = viewButton(modalElement, "Играть заново");
     const buttonSettings = viewButton(modalElement, "Настройки");
 

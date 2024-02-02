@@ -1,5 +1,5 @@
-import { triggerColor } from "../functions.js";
-import { GRID_SIZE } from "../globalConst.js";
+import { triggerColor, cloneGridPieces, clonePiece } from "../functions.js";
+import { GRID_SIZE, WHITE } from "../globalConst.js";
 import SearchForAMove from "./SearchForAMove.js";
 import { checkACheck } from "../checkingTheGameStatus/Check.js";
 import replacePiece from "./promotionChoice.js";
@@ -46,7 +46,7 @@ export default class Computer {
       color,
       value: piece,
       x,
-      y: color === "w" ? 0 : GRID_SIZE - 1,
+      y: color === WHITE ? 0 : GRID_SIZE - 1,
     });
   }
 
@@ -123,23 +123,23 @@ export default class Computer {
       for (let index = 0; index < newPiece.moves.length; index++) {
         const move = newPiece.moves[index];
 
-        const piece = clone(newPiece.value);
+        const piece = clonePiece(newPiece.value);
         const eatenOnAisle = move.eatenOnAisle;
-        const cloneGridPieces = clone(gridPieces);
-        cloneGridPieces.movePiece({ move, piece });
+        const copyGridPieces = cloneGridPieces(gridPieces);
+        copyGridPieces.movePiece({ move, piece });
 
         if (move.replacePiece) {
-          cloneGridPieces[move.y][move.y] = move.replacePiece;
+          copyGridPieces[move.y][move.y] = move.replacePiece;
         }
 
         const isCheck = checkACheck(
-          cloneGridPieces.value,
+          copyGridPieces.value,
           triggerColor(color),
           eatenOnAisle
         );
-        const nextGameState = clone(gameEnd);
+        const nextGameState = deepClone(gameEnd);
         const result = nextGameState.choice({
-          gridPieces: cloneGridPieces.value,
+          gridPieces: copyGridPieces.value,
           isAMove: color,
           piece,
           eatenOnAisle,
@@ -162,7 +162,7 @@ export default class Computer {
             resolve(
               this.searchBestMove(
                 eatenOnAisle,
-                cloneGridPieces,
+                copyGridPieces,
                 triggerColor(color),
                 nextGameState,
                 isCheck,
@@ -197,9 +197,7 @@ function calcStaticScore(gridPieces, color, eatenOnAisle, isCheck) {
     .concat(...gridPieces)
     .filter((piece) => piece)
     .forEach((piece) => {
-      if (!piece.color) {
-        console.log("piece", piece);
-      }
+      // TODO иногда piece.color = undefined
       if (color == piece.color) {
         // score += piece.checkMoves({ gridPieces, eatenOnAisle, isCheck }).length;
         score += FIGURE_VALUES[piece.constructor.name];
@@ -209,53 +207,4 @@ function calcStaticScore(gridPieces, color, eatenOnAisle, isCheck) {
       }
     });
   return score;
-}
-
-function colorPieces(gridPieces, color) {
-  return [].concat(...gridPieces).filter((piece) => piece?.color === color);
-}
-function clone(obj) {
-  // Handle the 3 simple types, and null or undefined
-  if (null == obj || "object" != typeof obj) return obj;
-
-  // Handle Date
-  if (obj instanceof Date) {
-    var copy = new Date();
-    copy.setTime(obj.getTime());
-    return copy;
-  }
-
-  // Handle Array
-  if (obj instanceof Array) {
-    var copy = [];
-    for (var i = 0, len = obj.length; i < len; ++i) {
-      copy[i] = clone(obj[i]);
-    }
-    return copy;
-  }
-
-  // Handle Object (functions are skipped)
-  if (obj instanceof Object && obj.constructor.name === "GridPieces") {
-    var copy = new obj.constructor(clone(obj.value));
-    for (var attr in obj) {
-      if (obj.hasOwnProperty(attr) && !(obj[attr] instanceof Function))
-        copy[attr] = clone(obj[attr]);
-    }
-    return copy;
-  }
-  // Handle Object (functions are skipped)
-  if (obj instanceof Object) {
-    var copy = new obj.constructor({
-      color: obj.color,
-      x: obj.x,
-      y: obj.y,
-    });
-    for (var attr in obj) {
-      if (obj.hasOwnProperty(attr) && !(obj[attr] instanceof Function))
-        copy[attr] = clone(obj[attr]);
-    }
-    return copy;
-  }
-
-  throw new Error("Unable to copy obj! Its type isn't supported.");
 }

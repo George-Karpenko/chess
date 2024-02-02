@@ -1,5 +1,5 @@
 import ClassesPieces from "./Model/Pieces/index.js";
-import { GRID_SIZE } from "./globalConst.js";
+import { GRID_SIZE, WHITE, BLACK } from "./globalConst.js";
 
 import GameController from "./Controller/GameController.js";
 import Computer from "./Model/Computer.js";
@@ -36,8 +36,8 @@ function createGame() {
   viewPieces = new ViewPieces(gameBoard, gridPieces.value);
   mapPieces = new MapPieces(viewPieces, gridPieces.value);
 
-  whitePlayer = getPlayer(whitePlayer, "w");
-  blackPlayer = getPlayer(blackPlayer, "b");
+  whitePlayer = getPlayer(whitePlayer, WHITE);
+  blackPlayer = getPlayer(blackPlayer, BLACK);
 
   game = new GameController({
     blackPlayer,
@@ -57,12 +57,9 @@ function endGame(result) {
 }
 
 function restartGame() {
+  // TODO возможно засаряется память после игры
   gameBoard.innerHTML = null;
-  // viewPieces = null;
-  // viewMoves.removeOldMove();
-  // viewMoves.removeMoves();
   viewModal.removeModal();
-  // createGame();
 }
 
 function getPlayer(player, color) {
@@ -93,10 +90,10 @@ function startingPositionOfPieces() {
     "Rook",
   ];
   const pieces = [
-    { y: 0, color: "b" },
-    { y: 1, color: "b", value: "Pawn" },
-    { y: GRID_SIZE - 2, color: "w", value: "Pawn" },
-    { y: GRID_SIZE - 1, color: "w" },
+    { y: 0, color: BLACK },
+    { y: 1, color: BLACK, value: "Pawn" },
+    { y: GRID_SIZE - 2, color: WHITE, value: "Pawn" },
+    { y: GRID_SIZE - 1, color: WHITE },
   ];
 
   for (let i = 0; i < GRID_SIZE; i++) {

@@ -23,7 +23,7 @@ export default class User {
     this.#viewMoves = viewMoves;
   }
 
-  async getMove(eatenOnAisle, isCheck) {
+  async getMove(eatenOnAisle, gameEnd, isCheck) {
     const result = await this.clickOnCell(eatenOnAisle, isCheck);
     return result;
   }
@@ -34,7 +34,6 @@ export default class User {
   }
 
   async clickOnCell(eatenOnAisle, isCheck, piece, moves) {
-    // console.log(await this.#viewMoves.choiceCell());
     const { x, y, isActive, event } = await this.#viewMoves.choiceCell();
     let move;
     if (moves && moves.length) {

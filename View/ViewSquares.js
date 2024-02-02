@@ -37,5 +37,5 @@ export default class ViewSquares {
 }
 
 function getY(color, y) {
-  return color === "b" ? GRID_SIZE - y - 1 : y;
+  return color === BLACK ? GRID_SIZE - y - 1 : y;
 }
