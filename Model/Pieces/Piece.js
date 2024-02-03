@@ -33,7 +33,12 @@ export default class Piece {
   }
 
   move({ move, gridPieces }) {
-    if (move?.pieceUnderBattle) {
+    // TODO пустой объект вообще передаваться не должен
+    if (
+      move?.pieceUnderBattle &&
+      Object.entries(move.pieceUnderBattle).length !== 0
+    ) {
+      console.log(move?.pieceUnderBattle);
       this.takingAPiece(move.pieceUnderBattle, gridPieces);
     }
     gridPieces[this.y][this.x] = null;
