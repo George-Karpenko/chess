@@ -35,7 +35,7 @@ export default class Piece {
   move({ move, gridPieces }) {
     // TODO пустой объект вообще передаваться не должен
     if (
-      move?.pieceUnderBattle &&
+      move.pieceUnderBattle &&
       Object.entries(move.pieceUnderBattle).length !== 0
     ) {
       console.log(move?.pieceUnderBattle);

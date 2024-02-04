@@ -9,7 +9,7 @@ export function colorPieces(gridPieces, color) {
 }
 
 export function cloneGridPieces(obj) {
-  return new obj.constructor(obj.value);
+  return new obj.constructor(cloneArrayGridPieces(obj.value));
 }
 
 export function cloneArrayGridPieces(gridPieces) {

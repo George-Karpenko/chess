@@ -1,4 +1,10 @@
-import { triggerColor, cloneGridPieces, clonePiece } from "../functions.js";
+import {
+  triggerColor,
+  cloneGridPieces,
+  clonePiece,
+  colorPieces,
+  deepClone,
+} from "../functions.js";
 import { GRID_SIZE, WHITE } from "../globalConst.js";
 import SearchForAMove from "./SearchForAMove.js";
 import { checkACheck } from "../checkingTheGameStatus/Check.js";
@@ -18,28 +24,28 @@ export default class Computer {
   async getMove(eatenOnAisle, gameEnd, isCheck) {
     // Реализация поиска хода с рекурсией, очень долго ищет ход
 
-    // const move = await this.searchBestMove({
-    //   eatenOnAisle,
-    //   gridPieces: this.#gridPieces,
-    //   color: this.#color,
-    //   gameEnd,
-    //   isCheck,
-    //   depth: 2,
-    // });
-    // return move.best_move;
-    const move = await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(
-          this.#searchForAMove.search(
-            eatenOnAisle,
-            this.#gridPieces.value,
-            this.#color,
-            isCheck
-          )
-        );
-      }, 0);
+    const move = await this.searchBestMove({
+      eatenOnAisle,
+      gridPieces: this.#gridPieces,
+      color: this.#color,
+      gameEnd,
+      isCheck,
+      depth: 3,
     });
-    return move;
+    return move.best_move;
+    // const move = await new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     resolve(
+    //       this.#searchForAMove.search(
+    //         eatenOnAisle,
+    //         this.#gridPieces.value,
+    //         this.#color,
+    //         isCheck
+    //       )
+    //     );
+    //   }, 0);
+    // });
+    // return move;
   }
   promotionChoice({ color, x, piece }) {
     return replacePiece({
@@ -124,7 +130,7 @@ export default class Computer {
         const move = newPiece.moves[index];
 
         const piece = clonePiece(newPiece.value);
-        const eatenOnAisle = move.eatenOnAisle;
+        const eatenOnAisle = move.eatenOnAisle || false;
         const copyGridPieces = cloneGridPieces(gridPieces);
         copyGridPieces.movePiece({ move, piece });
 
@@ -138,36 +144,36 @@ export default class Computer {
           eatenOnAisle
         );
         const nextGameState = deepClone(gameEnd);
-        const result = nextGameState.choice({
-          gridPieces: copyGridPieces.value,
-          isAMove: color,
-          piece,
-          eatenOnAisle,
-          isCheck,
-        });
-        if (result?.title === "Checkmate") {
-          score = Infinity;
-          best_move = { move, piece: newPiece.value };
-          return { score, best_move };
-        }
-        if (result?.title === "Draw") {
-          if (0 > score) {
-            score = 0;
-            best_move = { move, piece: newPiece.value };
-          }
-          return { score, best_move };
-        }
+        // const result = nextGameState.choice({
+        //   gridPieces: copyGridPieces.value,
+        //   isAMove: color,
+        //   piece,
+        //   eatenOnAisle,
+        //   isCheck,
+        // });
+        // if (result?.title === "Checkmate") {
+        //   score = Infinity;
+        //   best_move = { move, piece: newPiece.value };
+        //   return { score, best_move };
+        // }
+        // if (result?.title === "Draw") {
+        //   if (0 > score) {
+        //     score = 0;
+        //     best_move = { move, piece: newPiece.value };
+        //   }
+        //   return { score, best_move };
+        // }
         const search_best_move_result = await new Promise((resolve) => {
           setTimeout(() => {
             resolve(
-              this.searchBestMove(
+              this.searchBestMove({
                 eatenOnAisle,
-                copyGridPieces,
-                triggerColor(color),
-                nextGameState,
+                gridPieces: copyGridPieces,
+                color: triggerColor(color),
+                gameEnd: nextGameState,
                 isCheck,
-                depth - 1
-              )
+                depth: depth - 1,
+              })
             );
           }, 0);
         });

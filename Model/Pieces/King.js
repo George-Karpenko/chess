@@ -1,9 +1,14 @@
 import Piece from "./Piece.js";
 import { GRID_SIZE } from "../../globalConst.js";
 import { checkACheck } from "../../checkingTheGameStatus/Check.js";
+import pieces from "./index.js";
 
 export default class King extends Piece {
   #isActivated = false;
+
+  get isActivated() {
+    return this.#isActivated;
+  }
 
   checkMovesOnEmptyBoard() {
     let moves = [
@@ -19,7 +24,7 @@ export default class King extends Piece {
     moves = moves.filter(
       ({ x, y }) => x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE
     );
-    if (!this.#isActivated) {
+    if (!this.isActivated) {
       moves.push({ x: this.x - 2, y: this.y });
       moves.push({ x: this.x + 2, y: this.y });
     }
@@ -36,6 +41,9 @@ export default class King extends Piece {
       }
       return { ...move, pieceUnderBattle: gridPieces[move.y][move.x] };
     });
+    if (this.isActivated) {
+      return moves;
+    }
     if (isCheck) {
       return moves.filter((move) => Math.abs(this.x - move.x) !== 2);
     }
@@ -55,10 +63,10 @@ export default class King extends Piece {
         const rook = rooks.find((rook) => rook.x === rookX);
         if (
           isPiece ||
-          !rook ||
           !~moves.findIndex(
             (move) => move.x === (this.x + moveX) / 2 && move.y === this.y
-          )
+          ) ||
+          !rook
         ) {
           moves = moves.filter((move) => move.x !== moveX);
           return;
@@ -78,6 +86,40 @@ export default class King extends Piece {
   move({ move, gridPieces }) {
     super.move({ move, gridPieces });
     this.#isActivated = true;
-    move.rook?.castling(gridPieces);
+    if (move.rook && Object.entries(move.rook).length !== 0) {
+      console.log(move.rook);
+      move.rook.castling(gridPieces);
+    }
   }
+
+  isCheck(gridPieces) {
+    const isCheckPieceBindThis = isCheckPiece.bind(this);
+    if (isCheckPieceBindThis("Knight", gridPieces)) return true;
+    if (isCheckPieceBindThis("Rook", gridPieces, "Queen")) return true;
+    if (isCheckPieceBindThis("Bishop", gridPieces, "Queen")) return true;
+    if (isCheckPieceBindThis("King", gridPieces)) return true;
+    if (isCheckPieceBindThis("Pawn", gridPieces)) return true;
+    return false;
+  }
+}
+
+function isCheckPiece(namePiece, gridPieces, additionalNameForVerification) {
+  const piece = new pieces[namePiece](this);
+  const moves = piece.checkMovesBasedOnPieces({
+    gridPieces,
+  });
+  if (
+    moves.some((move) => {
+      const piece = move.pieceUnderBattle;
+      if (!piece) return false;
+      return (
+        (piece.constructor.name === namePiece ||
+          piece.constructor.name === additionalNameForVerification) &&
+        piece.color !== this.color
+      );
+    })
+  ) {
+    return true;
+  }
+  return false;
 }
