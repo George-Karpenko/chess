@@ -57,7 +57,6 @@ function endGame(result) {
 }
 
 function restartGame() {
-  // TODO возможно засаряется память после игры
   gameBoard.innerHTML = null;
   viewModal.removeModal();
 }
